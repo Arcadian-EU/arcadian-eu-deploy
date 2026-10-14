@@ -1,11 +1,20 @@
 import {readFile, writeFile, mkdir, readdir} from 'node:fs/promises';
 
 const root = new URL('../static-site/', import.meta.url);
-const release = 'investors-20261015-v3';
+const release = 'investors-20261015-v4';
 const esc = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('"', '&quot;');
 // Identity, portrait and contacts match the homepage. Team/scope: owner, 2026-10-15.
 // KBO/BCE and employer registration are separate planned steps:
 // https://business.belgium.be/start-a-business/register-your-business/register-as-a-company
+// Career dates: founder's LinkedIn, read 2026-10-15. Collaborations: owner statement.
+// KBO confirms identity; it does not establish the commercial relationship.
+// Radiance's Schoten entity was confirmed by the owner after the register lookup.
+const collaborators = [
+  ['Suren Electro', '0747730537', 'SUREN ELECTRO BV'],
+  ['Cleys', '0471821955', 'CLEYS BV'],
+  ['Radiance Energy', '0536830662', 'RADIANCE BELGIUM NV'],
+];
+const companyLinks = text => collaborators.reduce((html, [name, number, legalName]) => html.replaceAll(name, `<a href="https://kbopub.economie.fgov.be/kbopub/zoeknummerform.html?nummer=${number}" target="_blank" rel="noopener noreferrer" title="KBO · ${legalName} · ${number}">${name}</a>`), esc(text));
 const copy = {
   en: {
     prefix: '', name: 'Investors', title: 'Electrical design. Construction expertise.',
@@ -18,9 +27,15 @@ const copy = {
     contact: 'Contact the founder', roadmapLink: 'Roadmap', teamLink: 'Team',
     teamTitle: 'Current delivery team', teamDate: 'As of 15 October 2026',
     team: [['5', 'Facade specialists'], ['3', 'Electricians'], ['2', 'Roofers'], ['6', 'Plumbers · subcontractors']],
-    roadmapLabel: 'THE ROADMAP', roadmapTitle: 'One stage at a time.', roadmapNote: 'Planned dates. Timing may change.',
+    roadmapLabel: 'THE ROADMAP', roadmapTitle: 'Experience. Next steps.', roadmapNote: 'Planned dates. Timing may change.',
+    historyLabel: 'FOUNDER’S EXPERIENCE', planLabel: 'ARCADIAN / NOW & PLANNED',
+    history: [
+      ['MAR 2016 – DEC 2022', 'Experience', 'Tesidex', 'Marketing and business development in Minsk.'],
+      ['MAR 2025 – AUG 2026', 'Co-founder', 'TRADE-PASS', 'Co-founded the business and helped develop it. Concluded the role in August 2026 following an ownership transition.'],
+      ['AUG 2026', 'Founder', 'ARCADIAN', 'Founder & Managing Director from August 2026. Electrical design, installation and project delivery in Europe.'],
+    ],
     stages: [
-      ['2026 / Q4', 'Current', 'Specialist works', 'Design and site delivery across electrical, PV, facade, roof and plumbing work.'],
+      ['2026 / Q4', 'Current', 'Arcadian today', 'Earlier work with Suren Electro. Current collaboration with Cleys and Radiance Energy.'],
       ['2027 / Q1', 'Planned', 'Belgian employer', 'KBO/BCE registration and employer registration with RSZ/ONSS.'],
       ['2027 / Q2', 'Planned', 'Complete renovation', 'Take on the full scope: building systems, plumbing, roofs, facades and finishes.'],
       ['2028', 'Planned', 'Land acquisition', 'Acquire land for a development project.'],
@@ -45,9 +60,15 @@ const copy = {
     contact: 'Contacteer de oprichter', roadmapLink: 'Roadmap', teamLink: 'Team',
     teamTitle: 'Huidige uitvoeringsploeg', teamDate: 'Stand op 15 oktober 2026',
     team: [['5', 'Gevelwerkers'], ['3', 'Elektriciens'], ['2', 'Dakwerkers'], ['6', 'Loodgieters · onderaannemers']],
-    roadmapLabel: 'DE ROADMAP', roadmapTitle: 'Stap voor stap.', roadmapNote: 'Geplande termijnen. Timing kan wijzigen.',
+    roadmapLabel: 'DE ROADMAP', roadmapTitle: 'Ervaring. Volgende stappen.', roadmapNote: 'Geplande termijnen. Timing kan wijzigen.',
+    historyLabel: 'ERVARING VAN DE OPRICHTER', planLabel: 'ARCADIAN / HUIDIG & GEPLAND',
+    history: [
+      ['MRT 2016 – DEC 2022', 'Ervaring', 'Tesidex', 'Marketing en bedrijfsontwikkeling in Minsk.'],
+      ['MRT 2025 – AUG 2026', 'Medeoprichter', 'TRADE-PASS', 'Het bedrijf mee opgericht en ontwikkeld. De rol in augustus 2026 afgerond na een wijziging in de eigendomsstructuur.'],
+      ['AUG 2026', 'Oprichter', 'ARCADIAN', 'Oprichter en algemeen directeur sinds augustus 2026. Elektrisch ontwerp, installaties en projectuitvoering in Europa.'],
+    ],
     stages: [
-      ['2026 / Q4', 'Huidig', 'Specialistische werken', 'Ontwerp en uitvoering: elektriciteit, PV, gevels, daken en sanitair met partners.'],
+      ['2026 / Q4', 'Huidig', 'Arcadian vandaag', 'Eerder werk met Suren Electro. Huidige samenwerking met Cleys en Radiance Energy.'],
       ['2027 / Q1', 'Gepland', 'Belgische werkgever', 'Inschrijving in de KBO/BCE en registratie als werkgever bij de RSZ/ONSS.'],
       ['2027 / Q2', 'Gepland', 'Totaalrenovatie', 'Het volledige werkpakket opnemen: installaties, sanitair, daken, gevels en afwerking.'],
       ['2028', 'Gepland', 'Grond kopen', 'Grond aankopen voor een bouwproject.'],
@@ -72,9 +93,15 @@ const copy = {
     contact: 'Kontakt z założycielem', roadmapLink: 'Plan rozwoju', teamLink: 'Zespół',
     teamTitle: 'Obecny zespół wykonawczy', teamDate: 'Stan na 15 października 2026',
     team: [['5', 'Fachowców od elewacji'], ['3', 'Elektryków'], ['2', 'Dekarzy'], ['6', 'Hydraulików · podwykonawcy']],
-    roadmapLabel: 'PLAN ROZWOJU', roadmapTitle: 'Etap po etapie.', roadmapNote: 'Planowane terminy. Harmonogram może się zmienić.',
+    roadmapLabel: 'PLAN ROZWOJU', roadmapTitle: 'Doświadczenie. Kolejne etapy.', roadmapNote: 'Planowane terminy. Harmonogram może się zmienić.',
+    historyLabel: 'DOŚWIADCZENIE ZAŁOŻYCIELA', planLabel: 'ARCADIAN / OBECNIE I PLANY',
+    history: [
+      ['III 2016 – XII 2022', 'Doświadczenie', 'Tesidex', 'Marketing i rozwój biznesu w Mińsku.'],
+      ['III 2025 – VIII 2026', 'Współzałożyciel', 'TRADE-PASS', 'Współtworzenie i rozwój firmy. Zakończenie roli w sierpniu 2026 po zmianie struktury właścicielskiej.'],
+      ['VIII 2026', 'Założyciel', 'ARCADIAN', 'Założyciel i dyrektor zarządzający od sierpnia 2026. Projekty elektryczne, montaż i realizacja projektów w Europie.'],
+    ],
     stages: [
-      ['2026 / Q4', 'Obecnie', 'Prace specjalistyczne', 'Projektowanie i wykonawstwo: elektryka, PV, elewacje, dachy i instalacje sanitarne z partnerami.'],
+      ['2026 / Q4', 'Obecnie', 'Arcadian dziś', 'Wcześniejsza współpraca z Suren Electro. Obecnie współpracujemy z Cleys i Radiance Energy.'],
       ['2027 / Q1', 'Planowane', 'Pracodawca w Belgii', 'Wpis do KBO/BCE i rejestracja jako pracodawca w RSZ/ONSS.'],
       ['2027 / Q2', 'Planowane', 'Kompleksowe remonty', 'Pełny zakres prac: instalacje sanitarne i elektryczne, dachy, elewacje oraz wykończenie.'],
       ['2028', 'Planowane', 'Zakup gruntu', 'Zakup gruntu pod projekt budowlany.'],
@@ -92,7 +119,7 @@ const copy = {
 
 for (const [locale, c] of Object.entries(copy)) {
   // Keep each explanatory block within the owner's requested 180 characters.
-  for (const text of [c.description, c.lead, c.gallery, c.roadmapNote, c.founderBio, c.investmentText, c.accountNote, ...c.stages.map(stage => stage[3])]) {
+  for (const text of [c.description, c.lead, c.gallery, c.roadmapNote, c.founderBio, c.investmentText, c.accountNote, ...c.history.map(stage => stage[3]), ...c.stages.map(stage => stage[3])]) {
     if ([...text].length > 180) throw new Error(`${locale}: block exceeds 180 characters (${[...text].length}): ${text}`);
   }
   const home = await readFile(new URL(`${c.prefix}index.html`, root), 'utf8');
@@ -126,7 +153,10 @@ for (const [locale, c] of Object.entries(copy)) {
     </header>
     <section id="roadmap" class="inv-roadmap inv-section blueprint" aria-labelledby="roadmap-title"><div class="inv-wrap">
       <div class="inv-section-heading"><span class="eyebrow">${esc(c.roadmapLabel)}</span><h2 id="roadmap-title">${esc(c.roadmapTitle)}</h2></div>
-      <ol class="inv-timeline">${c.stages.map(([date, status, title, text], i) => `<li${i === 0 ? ' class="is-current"' : ''}><span class="inv-wire" aria-hidden="true"></span><span class="inv-milestone" aria-hidden="true"></span><div class="inv-stage-copy"><span class="inv-stage-date">${esc(date)}</span><span class="inv-status">${esc(status)}</span><h3>${esc(title)}</h3><p>${esc(text)}</p></div></li>`).join('')}</ol>
+      <div class="inv-track-heading"><span>${esc(c.historyLabel)}</span><a href="https://www.linkedin.com/in/tony-k-52657a164/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a></div>
+      <ol class="inv-timeline inv-history" aria-label="${esc(c.historyLabel)}">${c.history.map(([date, status, title, text]) => `<li><span class="inv-wire" aria-hidden="true"></span><span class="inv-milestone" aria-hidden="true"></span><div class="inv-stage-copy"><span class="inv-stage-date">${esc(date)}</span><span class="inv-status">${esc(status)}</span><h3>${esc(title)}</h3><p>${esc(text)}</p></div></li>`).join('')}</ol>
+      <div class="inv-track-heading inv-plan-heading"><span>${esc(c.planLabel)}</span></div>
+      <ol class="inv-timeline" aria-label="${esc(c.planLabel)}">${c.stages.map(([date, status, title, text], i) => `<li${i === 0 ? ' class="is-current"' : ''}><span class="inv-wire" aria-hidden="true"></span><span class="inv-milestone" aria-hidden="true"></span><div class="inv-stage-copy"><span class="inv-stage-date">${esc(date)}</span><span class="inv-status">${esc(status)}</span><h3>${esc(title)}</h3><p>${i === 0 ? companyLinks(text) : esc(text)}</p></div></li>`).join('')}</ol>
       <p class="inv-note">${esc(c.roadmapNote)}</p>
     </div></section>
     <section id="partnership" class="inv-contact inv-section" aria-labelledby="partnership-title"><div class="inv-wrap">
