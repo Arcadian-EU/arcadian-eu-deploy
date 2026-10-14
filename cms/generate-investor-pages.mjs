@@ -1,7 +1,10 @@
 import {readFile, writeFile, mkdir, readdir} from 'node:fs/promises';
 
 const root = new URL('../static-site/', import.meta.url);
-const release = 'investors-20261015-v6';
+const release = 'investors-20261015-v7';
+const roadmapAsOf = '2026-10-15';
+// Calendar anchors are the starts of the displayed periods, not promised completion dates.
+const roadmapDates = ['2025-03-01', '2026-08-01', '2026-10-01', '2027-01-01', '2027-04-01', '2028-01-01', '2029-01-01'];
 const esc = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('"', '&quot;');
 // Identity, portrait and contacts match the homepage. Team/scope: owner, 2026-10-15.
 // KBO/BCE and employer registration are separate planned steps:
@@ -30,13 +33,13 @@ const copy = {
     contact: 'Contact the founder', roadmapLink: 'Roadmap', teamLink: 'Team',
     teamTitle: 'Current delivery team', teamDate: 'As of 15 October 2026',
     team: [['5', 'Facade specialists'], ['3', 'Electricians'], ['2', 'Roofers'], ['6', 'Plumbers · subcontractors']],
-    roadmapLabel: 'THE ROADMAP', roadmapTitle: 'Experience. Next steps.', roadmapNote: 'Planned dates. Timing may change.',
+    roadmapLabel: 'THE ROADMAP', roadmapTitle: 'Experience. Next steps.', roadmapNote: 'Planned dates. Timing may change.', nowLabel: 'NOW',
     history: [
       ['MAR 2025 – AUG 2026', 'Co-founder', 'TRADE-PASS Sp. z o.o.', 'Co-founded and developed the business. Worked with Suren Electro. Concluded the role in August 2026 following an ownership transition.'],
       ['AUG 2026', 'Founder', 'ARCADIAN Sp. z o.o.', 'Founder & Managing Director from August 2026. Electrical design, installation and project delivery in Europe.'],
     ],
     stages: [
-      ['2026 / Q4', 'Current', 'Arcadian today', 'Current collaboration with Cleys and Radiance Energy.'],
+      ['2026 / Q4', 'Current', 'ARCADIAN Sp. z o.o.', 'Current collaboration with Cleys and Radiance Energy.'],
       ['2027 / Q1', 'Planned', 'Belgian employer', 'KBO/BCE registration and employer registration with RSZ/ONSS.'],
       ['2027 / Q2', 'Planned', 'Complete renovation', 'Take on the full scope: building systems, plumbing, roofs, facades and finishes.'],
       ['2028', 'Planned', 'Land acquisition', 'Acquire land for a development project.'],
@@ -61,13 +64,13 @@ const copy = {
     contact: 'Contacteer de oprichter', roadmapLink: 'Roadmap', teamLink: 'Team',
     teamTitle: 'Huidige uitvoeringsploeg', teamDate: 'Stand op 15 oktober 2026',
     team: [['5', 'Gevelwerkers'], ['3', 'Elektriciens'], ['2', 'Dakwerkers'], ['6', 'Loodgieters · onderaannemers']],
-    roadmapLabel: 'DE ROADMAP', roadmapTitle: 'Ervaring. Volgende stappen.', roadmapNote: 'Geplande termijnen. Timing kan wijzigen.',
+    roadmapLabel: 'DE ROADMAP', roadmapTitle: 'Ervaring. Volgende stappen.', roadmapNote: 'Geplande termijnen. Timing kan wijzigen.', nowLabel: 'NU',
     history: [
       ['MRT 2025 – AUG 2026', 'Medeoprichter', 'TRADE-PASS Sp. z o.o.', 'Het bedrijf mee opgericht en ontwikkeld. Samengewerkt met Suren Electro. De rol in augustus 2026 afgerond na een wijziging in de eigendomsstructuur.'],
       ['AUG 2026', 'Oprichter', 'ARCADIAN Sp. z o.o.', 'Oprichter en algemeen directeur sinds augustus 2026. Elektrisch ontwerp, installaties en projectuitvoering in Europa.'],
     ],
     stages: [
-      ['2026 / Q4', 'Huidig', 'Arcadian vandaag', 'Huidige samenwerking met Cleys en Radiance Energy.'],
+      ['2026 / Q4', 'Huidig', 'ARCADIAN Sp. z o.o.', 'Huidige samenwerking met Cleys en Radiance Energy.'],
       ['2027 / Q1', 'Gepland', 'Belgische werkgever', 'Inschrijving in de KBO/BCE en registratie als werkgever bij de RSZ/ONSS.'],
       ['2027 / Q2', 'Gepland', 'Totaalrenovatie', 'Het volledige werkpakket opnemen: installaties, sanitair, daken, gevels en afwerking.'],
       ['2028', 'Gepland', 'Grond kopen', 'Grond aankopen voor een bouwproject.'],
@@ -92,13 +95,13 @@ const copy = {
     contact: 'Kontakt z założycielem', roadmapLink: 'Plan rozwoju', teamLink: 'Zespół',
     teamTitle: 'Obecny zespół wykonawczy', teamDate: 'Stan na 15 października 2026',
     team: [['5', 'Fachowców od elewacji'], ['3', 'Elektryków'], ['2', 'Dekarzy'], ['6', 'Hydraulików · podwykonawcy']],
-    roadmapLabel: 'PLAN ROZWOJU', roadmapTitle: 'Doświadczenie. Kolejne etapy.', roadmapNote: 'Planowane terminy. Harmonogram może się zmienić.',
+    roadmapLabel: 'PLAN ROZWOJU', roadmapTitle: 'Doświadczenie. Kolejne etapy.', roadmapNote: 'Planowane terminy. Harmonogram może się zmienić.', nowLabel: 'TERAZ',
     history: [
       ['III 2025 – VIII 2026', 'Współzałożyciel', 'TRADE-PASS Sp. z o.o.', 'Współtworzenie i rozwój firmy. Współpraca z Suren Electro. Zakończenie roli w sierpniu 2026 po zmianie struktury właścicielskiej.'],
       ['VIII 2026', 'Założyciel', 'ARCADIAN Sp. z o.o.', 'Założyciel i dyrektor zarządzający od sierpnia 2026. Projekty elektryczne, montaż i realizacja projektów w Europie.'],
     ],
     stages: [
-      ['2026 / Q4', 'Obecnie', 'Arcadian dziś', 'Obecnie współpracujemy z Cleys i Radiance Energy.'],
+      ['2026 / Q4', 'Obecnie', 'ARCADIAN Sp. z o.o.', 'Obecnie współpracujemy z Cleys i Radiance Energy.'],
       ['2027 / Q1', 'Planowane', 'Pracodawca w Belgii', 'Wpis do KBO/BCE i rejestracja jako pracodawca w RSZ/ONSS.'],
       ['2027 / Q2', 'Planowane', 'Kompleksowe remonty', 'Pełny zakres prac: instalacje sanitarne i elektryczne, dachy, elewacje oraz wykończenie.'],
       ['2028', 'Planowane', 'Zakup gruntu', 'Zakup gruntu pod projekt budowlany.'],
@@ -151,7 +154,10 @@ for (const [locale, c] of Object.entries(copy)) {
     <section id="roadmap" class="inv-roadmap inv-section blueprint" aria-labelledby="roadmap-title"><div class="inv-wrap">
       <div class="inv-section-heading"><span class="eyebrow">${esc(c.roadmapLabel)}</span><h2 id="roadmap-title">${esc(c.roadmapTitle)}</h2></div>
       <div class="inv-track-heading"><span>2025 — 2029</span><a href="https://www.linkedin.com/in/tony-k-52657a164/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a></div>
-      <ol class="inv-timeline" aria-label="${esc(c.roadmapTitle)}">${[...c.history, ...c.stages].map(([date, status, title, text], i) => `<li${i < c.history.length ? ' class="is-past"' : i === c.history.length ? ' class="is-current"' : ''}><span class="inv-wire" aria-hidden="true"></span><span class="inv-milestone" aria-hidden="true"></span><div class="inv-stage-copy"><span class="inv-stage-date">${esc(date)}</span><span class="inv-status">${esc(status)}</span><h3>${esc(title)}</h3><p>${companyLinks(text)}</p></div></li>`).join('')}</ol>
+      <div class="inv-roadmap-track">
+        <ol class="inv-timeline" aria-label="${esc(c.roadmapTitle)}">${[...c.history, ...c.stages].map(([date, status, title, text], i) => `<li data-roadmap-date="${roadmapDates[i]}"${i < c.history.length ? ' class="is-past"' : i === c.history.length ? ' class="is-current"' : ''}><span class="inv-wire" aria-hidden="true"></span><span class="inv-milestone" aria-hidden="true"></span><div class="inv-stage-copy"><span class="inv-stage-date">${esc(date)}</span>${i === c.history.length ? `<span class="inv-now-inline" aria-hidden="true">${esc(c.nowLabel)} · <time datetime="${roadmapAsOf}">15.10.2026</time></span>` : ''}<span class="inv-status">${esc(status)}</span><h3>${esc(title)}</h3><p>${companyLinks(text)}</p></div></li>`).join('')}</ol>
+        <div class="inv-now" role="note" aria-label="${esc(c.nowLabel)}: 15.10.2026" data-now-label="${esc(c.nowLabel)}" hidden><span class="inv-now-label">${esc(c.nowLabel)}<time datetime="${roadmapAsOf}">15.10.2026</time></span><span class="inv-now-arrow" aria-hidden="true"></span></div>
+      </div>
       <p class="inv-note">${esc(c.roadmapNote)}</p>
     </div></section>
     <section id="partnership" class="inv-contact inv-section" aria-labelledby="partnership-title"><div class="inv-wrap">

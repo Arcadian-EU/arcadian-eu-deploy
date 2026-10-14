@@ -58,7 +58,14 @@
 .inv-note{margin-top:18px;font:10px/1.5 var(--mono);color:#9faec8}
 .inv-track-heading{display:flex;justify-content:space-between;gap:20px;align-items:baseline;font:10px/1.5 var(--mono);color:#b3bfd5;letter-spacing:.04em}
 .inv-track-heading a{color:#e8a16b;text-decoration:underline;text-underline-offset:4px}
-.inv-track-heading+.inv-timeline{margin-top:28px}
+.inv-roadmap-track{position:relative;margin-top:28px}
+.inv-roadmap-track .inv-timeline{margin-top:0}
+.inv-now{position:absolute;z-index:2;pointer-events:none}
+.inv-now::before{content:'';position:absolute;top:-32px;left:0;height:24px;border-left:1px dashed #f0b17d}
+.inv-now-label{position:absolute;bottom:34px;left:0;display:grid;gap:2px;width:max-content;padding:5px 9px;border:1px solid #bd8957;border-radius:3px;background:#191b25;color:#f0b17d;white-space:nowrap;font:600 10px/1.4 var(--mono);text-transform:uppercase}
+.inv-now-label time{font-size:9px;font-weight:400;color:#f1dfcf}
+.inv-now-arrow{position:absolute;left:-5px;top:-8px;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid #f0b17d;transform-origin:50% 100%}
+.inv-now-inline{display:none}
 .inv-timeline li.is-past .inv-wire{border-color:#a77953}
 .is-past .inv-milestone{background:#d7a16f;border-color:#d7a16f}
 .is-past .inv-status{border-color:#805d40;color:#e8bd96}
@@ -100,3 +107,4 @@
 @media(max-width:1050px){.inv-timeline{grid-template-columns:1fr;gap:0;min-height:0;margin-top:28px}.inv-timeline::before{top:7px;bottom:30px;left:6px;right:auto;border-top:0;border-left:1px solid #56637e}.inv-timeline::after{display:none}.inv-timeline li{padding:0 0 28px}.inv-timeline li:last-child{padding-bottom:0}.inv-stage-copy,.inv-timeline li:nth-child(even) .inv-stage-copy{padding:0 0 0 38px}.inv-wire,.inv-timeline li:nth-child(even) .inv-wire{top:7px;left:6px;width:24px;height:0;border:0;border-top:1px solid #56637e}.is-current .inv-wire{border-color:#e8a16b}.inv-milestone{top:2px}.inv-stage-date{display:block;margin-bottom:9px;font-size:10px}.inv-timeline h3{font-size:16px}.inv-timeline p{font-size:12px}.inv-status{margin-bottom:10px}.inv-note{margin-left:38px;font-size:9px}}
 @media(prefers-reduced-motion:reduce){.investor-page *{scroll-behavior:auto!important;transition:none!important}}
 @media(max-width:1050px){.inv-stage-copy{width:100%}.inv-timeline li.is-past .inv-wire{border-color:#a77953}.inv-track-heading{font-size:9px;gap:12px}}
+@media(max-width:1050px){.inv-now-label,.inv-now::before{display:none}.inv-now-arrow{transform:rotate(90deg)}.inv-now-inline{display:flex;gap:6px;align-items:baseline;margin-bottom:10px;color:#f0b17d;font:600 10px/1.5 var(--mono);text-transform:uppercase}.inv-now-inline time{font-weight:400}}
