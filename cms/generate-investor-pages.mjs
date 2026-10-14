@@ -1,7 +1,7 @@
 import {readFile, writeFile, mkdir, readdir} from 'node:fs/promises';
 
 const root = new URL('../static-site/', import.meta.url);
-const release = 'investors-20261015-v2';
+const release = 'investors-20261015-v3';
 const esc = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('"', '&quot;');
 // Identity, portrait and contacts match the homepage. Team/scope: owner, 2026-10-15.
 // KBO/BCE and employer registration are separate planned steps:
@@ -18,12 +18,13 @@ const copy = {
     contact: 'Contact the founder', roadmapLink: 'Roadmap', teamLink: 'Team',
     teamTitle: 'Current delivery team', teamDate: 'As of 15 October 2026',
     team: [['5', 'Facade specialists'], ['3', 'Electricians'], ['2', 'Roofers'], ['6', 'Plumbers · subcontractors']],
-    roadmapLabel: 'THE ROADMAP', roadmapTitle: 'One stage at a time.', roadmapNote: 'Future stages are planned. Dates will follow.',
+    roadmapLabel: 'THE ROADMAP', roadmapTitle: 'One stage at a time.', roadmapNote: 'Planned dates. Timing may change.',
     stages: [
       ['2026 / Q4', 'Current', 'Specialist works', 'Design and site delivery across electrical, PV, facade, roof and plumbing work.'],
-      ['02 / DATE TBD', 'Planned', 'Belgian employer', 'KBO/BCE registration and employer registration with RSZ/ONSS.'],
-      ['03 / DATE TBD', 'Planned', 'Complete renovation', 'Take on the full scope: building systems, plumbing, roofs, facades and finishes.'],
-      ['04 / DATE TBD', 'Longer term', 'Land. Build. Sell.', 'Acquire land or property, build or renovate, then sell the completed asset.'],
+      ['2027 / Q1', 'Planned', 'Belgian employer', 'KBO/BCE registration and employer registration with RSZ/ONSS.'],
+      ['2027 / Q2', 'Planned', 'Complete renovation', 'Take on the full scope: building systems, plumbing, roofs, facades and finishes.'],
+      ['2028', 'Planned', 'Land acquisition', 'Acquire land for a development project.'],
+      ['2029', 'Planned', 'Build. Sell.', 'Build the property and sell the completed asset.'],
     ],
     founderRole: 'Founder · Design & delivery',
     founderBio: 'I design electrical and plumbing systems and take responsibility for project delivery. Contact me directly.',
@@ -44,12 +45,13 @@ const copy = {
     contact: 'Contacteer de oprichter', roadmapLink: 'Roadmap', teamLink: 'Team',
     teamTitle: 'Huidige uitvoeringsploeg', teamDate: 'Stand op 15 oktober 2026',
     team: [['5', 'Gevelwerkers'], ['3', 'Elektriciens'], ['2', 'Dakwerkers'], ['6', 'Loodgieters · onderaannemers']],
-    roadmapLabel: 'DE ROADMAP', roadmapTitle: 'Stap voor stap.', roadmapNote: 'Toekomstige stappen zijn gepland. Datums volgen.',
+    roadmapLabel: 'DE ROADMAP', roadmapTitle: 'Stap voor stap.', roadmapNote: 'Geplande termijnen. Timing kan wijzigen.',
     stages: [
       ['2026 / Q4', 'Huidig', 'Specialistische werken', 'Ontwerp en uitvoering: elektriciteit, PV, gevels, daken en sanitair met partners.'],
-      ['02 / DATUM VOLGT', 'Gepland', 'Belgische werkgever', 'Inschrijving in de KBO/BCE en registratie als werkgever bij de RSZ/ONSS.'],
-      ['03 / DATUM VOLGT', 'Gepland', 'Totaalrenovatie', 'Het volledige werkpakket opnemen: installaties, sanitair, daken, gevels en afwerking.'],
-      ['04 / DATUM VOLGT', 'Langere termijn', 'Grond. Bouwen. Verkopen.', 'Grond of vastgoed aankopen, bouwen of renoveren en het afgewerkte pand verkopen.'],
+      ['2027 / Q1', 'Gepland', 'Belgische werkgever', 'Inschrijving in de KBO/BCE en registratie als werkgever bij de RSZ/ONSS.'],
+      ['2027 / Q2', 'Gepland', 'Totaalrenovatie', 'Het volledige werkpakket opnemen: installaties, sanitair, daken, gevels en afwerking.'],
+      ['2028', 'Gepland', 'Grond kopen', 'Grond aankopen voor een bouwproject.'],
+      ['2029', 'Gepland', 'Bouwen. Verkopen.', 'Het pand bouwen en het afgewerkte vastgoed verkopen.'],
     ],
     founderRole: 'Oprichter · Ontwerp & uitvoering',
     founderBio: 'Ik ontwerp elektrische en sanitaire systemen en neem de verantwoordelijkheid voor de projectuitvoering. Contacteer mij rechtstreeks.',
@@ -70,12 +72,13 @@ const copy = {
     contact: 'Kontakt z założycielem', roadmapLink: 'Plan rozwoju', teamLink: 'Zespół',
     teamTitle: 'Obecny zespół wykonawczy', teamDate: 'Stan na 15 października 2026',
     team: [['5', 'Fachowców od elewacji'], ['3', 'Elektryków'], ['2', 'Dekarzy'], ['6', 'Hydraulików · podwykonawcy']],
-    roadmapLabel: 'PLAN ROZWOJU', roadmapTitle: 'Etap po etapie.', roadmapNote: 'Przyszłe etapy są planowane. Terminy podamy później.',
+    roadmapLabel: 'PLAN ROZWOJU', roadmapTitle: 'Etap po etapie.', roadmapNote: 'Planowane terminy. Harmonogram może się zmienić.',
     stages: [
       ['2026 / Q4', 'Obecnie', 'Prace specjalistyczne', 'Projektowanie i wykonawstwo: elektryka, PV, elewacje, dachy i instalacje sanitarne z partnerami.'],
-      ['02 / TERMIN DO USTALENIA', 'Planowane', 'Pracodawca w Belgii', 'Wpis do KBO/BCE i rejestracja jako pracodawca w RSZ/ONSS.'],
-      ['03 / TERMIN DO USTALENIA', 'Planowane', 'Kompleksowe remonty', 'Pełny zakres prac: instalacje sanitarne i elektryczne, dachy, elewacje oraz wykończenie.'],
-      ['04 / TERMIN DO USTALENIA', 'Dalszy plan', 'Grunt. Budowa. Sprzedaż.', 'Zakup gruntu lub nieruchomości, budowa albo remont, a następnie sprzedaż gotowego obiektu.'],
+      ['2027 / Q1', 'Planowane', 'Pracodawca w Belgii', 'Wpis do KBO/BCE i rejestracja jako pracodawca w RSZ/ONSS.'],
+      ['2027 / Q2', 'Planowane', 'Kompleksowe remonty', 'Pełny zakres prac: instalacje sanitarne i elektryczne, dachy, elewacje oraz wykończenie.'],
+      ['2028', 'Planowane', 'Zakup gruntu', 'Zakup gruntu pod projekt budowlany.'],
+      ['2029', 'Planowane', 'Budowa. Sprzedaż.', 'Budowa nieruchomości i sprzedaż gotowego obiektu.'],
     ],
     founderRole: 'Założyciel · Projektowanie i realizacja',
     founderBio: 'Projektuję instalacje elektryczne i sanitarne oraz odpowiadam za realizację projektu. Skontaktuj się ze mną bezpośrednio.',
