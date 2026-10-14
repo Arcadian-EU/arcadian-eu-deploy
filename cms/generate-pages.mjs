@@ -82,4 +82,5 @@ async function refreshNavigation(directory) {
   }
 }
 await refreshNavigation(site);
-console.log('Generated galleries and cooperation pages, and refreshed navigation in EN, PL and NL.');
+await import('./generate-investor-pages.mjs');
+console.log('Generated galleries, cooperation and investor pages, and refreshed navigation in EN, PL and NL.');
