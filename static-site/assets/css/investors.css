@@ -86,8 +86,11 @@
 .inv-company dt{color:#747b88}
 .inv-account{align-self:start;border-left:2px solid #bd8957;padding-left:18px}
 .inv-account-heading{display:flex;gap:15px;flex-wrap:wrap;align-items:baseline}
-.inv-account-heading>span{font:9px var(--mono);color:#8e491e;border:1px solid #d7b99c;padding:3px 6px;border-radius:3px}
-.inv-account code{display:block;overflow-wrap:anywhere;font:13px/1.5 var(--mono);color:#6c727d;margin-top:12px}
+.inv-bank-details{display:grid;gap:9px;margin-top:14px}
+.inv-bank-details>div{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:baseline}
+.inv-bank-details dt{font:10px/1.5 var(--mono);color:#747b88}
+.inv-bank-details dd{font-size:12px;color:#4e5664;overflow-wrap:anywhere}
+.inv-account code{display:block;overflow-wrap:anywhere;font:13px/1.5 var(--mono);color:#4e5664}
 .inv-account p{font-size:10px;color:#747b88;margin-top:6px}
 .investor-page .site-footer{padding-top:30px}
 @media(max-width:1050px){.inv-hero-grid{gap:32px;grid-template-columns:1.2fr 1fr}.inv-hero h1{font-size:37px}.inv-contact-grid,.inv-company-grid{gap:36px}.inv-founder{grid-template-columns:85px 1fr;gap:18px}.inv-founder>img{width:85px;height:115px}.inv-timeline{gap:20px}.inv-timeline h3{font-size:16px}}

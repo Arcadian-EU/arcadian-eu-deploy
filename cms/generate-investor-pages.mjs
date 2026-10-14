@@ -1,7 +1,7 @@
 import {readFile, writeFile, mkdir, readdir} from 'node:fs/promises';
 
 const root = new URL('../static-site/', import.meta.url);
-const release = 'investors-20261015-v5';
+const release = 'investors-20261015-v6';
 const esc = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('"', '&quot;');
 // Identity, portrait and contacts match the homepage. Team/scope: owner, 2026-10-15.
 // KBO/BCE and employer registration are separate planned steps:
@@ -9,6 +9,9 @@ const esc = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt
 // Career dates: founder's LinkedIn, read 2026-10-15. Collaborations: owner statement.
 // KBO confirms identity; it does not establish the commercial relationship.
 // Radiance's Schoten entity was confirmed by the owner after the register lookup.
+// Suren Electro belongs to the TRADE-PASS period, as clarified by the owner.
+// EUR account and exact beneficiary name supplied/confirmed by the owner, 2026-10-15.
+const bankDetails = {beneficiary: 'ARCADIAN Sp. z o.o.', iban: 'LT263250099245830416', bic: 'REVOLT21'};
 const collaborators = [
   ['Suren Electro', '0747730537', 'SUREN ELECTRO BV'],
   ['Cleys', '0471821955', 'CLEYS BV'],
@@ -29,11 +32,11 @@ const copy = {
     team: [['5', 'Facade specialists'], ['3', 'Electricians'], ['2', 'Roofers'], ['6', 'Plumbers · subcontractors']],
     roadmapLabel: 'THE ROADMAP', roadmapTitle: 'Experience. Next steps.', roadmapNote: 'Planned dates. Timing may change.',
     history: [
-      ['MAR 2025 – AUG 2026', 'Co-founder', 'TRADE-PASS', 'Co-founded the business and helped develop it. Concluded the role in August 2026 following an ownership transition.'],
-      ['AUG 2026', 'Founder', 'ARCADIAN', 'Founder & Managing Director from August 2026. Electrical design, installation and project delivery in Europe.'],
+      ['MAR 2025 – AUG 2026', 'Co-founder', 'TRADE-PASS Sp. z o.o.', 'Co-founded and developed the business. Worked with Suren Electro. Concluded the role in August 2026 following an ownership transition.'],
+      ['AUG 2026', 'Founder', 'ARCADIAN Sp. z o.o.', 'Founder & Managing Director from August 2026. Electrical design, installation and project delivery in Europe.'],
     ],
     stages: [
-      ['2026 / Q4', 'Current', 'Arcadian today', 'Earlier work with Suren Electro. Current collaboration with Cleys and Radiance Energy.'],
+      ['2026 / Q4', 'Current', 'Arcadian today', 'Current collaboration with Cleys and Radiance Energy.'],
       ['2027 / Q1', 'Planned', 'Belgian employer', 'KBO/BCE registration and employer registration with RSZ/ONSS.'],
       ['2027 / Q2', 'Planned', 'Complete renovation', 'Take on the full scope: building systems, plumbing, roofs, facades and finishes.'],
       ['2028', 'Planned', 'Land acquisition', 'Acquire land for a development project.'],
@@ -45,7 +48,7 @@ const copy = {
     investmentText: 'We agree the project, funding, responsibilities and terms in a signed contract.',
     emailLabel: 'Email', whatsappLabel: 'WhatsApp',
     companyLabel: 'Polish limited liability company', addressCountry: 'Poland',
-    accountLabel: 'EUR account', testLabel: 'TEST DETAILS', accountNote: 'Placeholder only. Not for transfers.', skip: 'Skip to content',
+    accountLabel: 'EUR account', beneficiaryLabel: 'Beneficiary', accountNote: 'Transfers under a signed agreement.', skip: 'Skip to content',
   },
   nl: {
     prefix: 'nl/', name: 'Investeerders', title: 'Elektrisch ontwerp. Bouwexpertise.',
@@ -60,11 +63,11 @@ const copy = {
     team: [['5', 'Gevelwerkers'], ['3', 'Elektriciens'], ['2', 'Dakwerkers'], ['6', 'Loodgieters · onderaannemers']],
     roadmapLabel: 'DE ROADMAP', roadmapTitle: 'Ervaring. Volgende stappen.', roadmapNote: 'Geplande termijnen. Timing kan wijzigen.',
     history: [
-      ['MRT 2025 – AUG 2026', 'Medeoprichter', 'TRADE-PASS', 'Het bedrijf mee opgericht en ontwikkeld. De rol in augustus 2026 afgerond na een wijziging in de eigendomsstructuur.'],
-      ['AUG 2026', 'Oprichter', 'ARCADIAN', 'Oprichter en algemeen directeur sinds augustus 2026. Elektrisch ontwerp, installaties en projectuitvoering in Europa.'],
+      ['MRT 2025 – AUG 2026', 'Medeoprichter', 'TRADE-PASS Sp. z o.o.', 'Het bedrijf mee opgericht en ontwikkeld. Samengewerkt met Suren Electro. De rol in augustus 2026 afgerond na een wijziging in de eigendomsstructuur.'],
+      ['AUG 2026', 'Oprichter', 'ARCADIAN Sp. z o.o.', 'Oprichter en algemeen directeur sinds augustus 2026. Elektrisch ontwerp, installaties en projectuitvoering in Europa.'],
     ],
     stages: [
-      ['2026 / Q4', 'Huidig', 'Arcadian vandaag', 'Eerder werk met Suren Electro. Huidige samenwerking met Cleys en Radiance Energy.'],
+      ['2026 / Q4', 'Huidig', 'Arcadian vandaag', 'Huidige samenwerking met Cleys en Radiance Energy.'],
       ['2027 / Q1', 'Gepland', 'Belgische werkgever', 'Inschrijving in de KBO/BCE en registratie als werkgever bij de RSZ/ONSS.'],
       ['2027 / Q2', 'Gepland', 'Totaalrenovatie', 'Het volledige werkpakket opnemen: installaties, sanitair, daken, gevels en afwerking.'],
       ['2028', 'Gepland', 'Grond kopen', 'Grond aankopen voor een bouwproject.'],
@@ -76,7 +79,7 @@ const copy = {
     investmentText: 'We leggen het project, de financiering, verantwoordelijkheden en voorwaarden vast in een ondertekend contract.',
     emailLabel: 'E-mail', whatsappLabel: 'WhatsApp',
     companyLabel: 'Poolse vennootschap met beperkte aansprakelijkheid', addressCountry: 'Polen',
-    accountLabel: 'EUR-rekening', testLabel: 'TESTGEGEVENS', accountNote: 'Tijdelijke voorbeeldgegevens. Niet voor overschrijvingen.', skip: 'Naar de inhoud',
+    accountLabel: 'EUR-rekening', beneficiaryLabel: 'Begunstigde', accountNote: 'Overschrijvingen op basis van een ondertekende overeenkomst.', skip: 'Naar de inhoud',
   },
   pl: {
     prefix: 'pl/', name: 'Inwestorzy', title: 'Projekty elektryczne. Doświadczenie budowlane.',
@@ -91,11 +94,11 @@ const copy = {
     team: [['5', 'Fachowców od elewacji'], ['3', 'Elektryków'], ['2', 'Dekarzy'], ['6', 'Hydraulików · podwykonawcy']],
     roadmapLabel: 'PLAN ROZWOJU', roadmapTitle: 'Doświadczenie. Kolejne etapy.', roadmapNote: 'Planowane terminy. Harmonogram może się zmienić.',
     history: [
-      ['III 2025 – VIII 2026', 'Współzałożyciel', 'TRADE-PASS', 'Współtworzenie i rozwój firmy. Zakończenie roli w sierpniu 2026 po zmianie struktury właścicielskiej.'],
-      ['VIII 2026', 'Założyciel', 'ARCADIAN', 'Założyciel i dyrektor zarządzający od sierpnia 2026. Projekty elektryczne, montaż i realizacja projektów w Europie.'],
+      ['III 2025 – VIII 2026', 'Współzałożyciel', 'TRADE-PASS Sp. z o.o.', 'Współtworzenie i rozwój firmy. Współpraca z Suren Electro. Zakończenie roli w sierpniu 2026 po zmianie struktury właścicielskiej.'],
+      ['VIII 2026', 'Założyciel', 'ARCADIAN Sp. z o.o.', 'Założyciel i dyrektor zarządzający od sierpnia 2026. Projekty elektryczne, montaż i realizacja projektów w Europie.'],
     ],
     stages: [
-      ['2026 / Q4', 'Obecnie', 'Arcadian dziś', 'Wcześniejsza współpraca z Suren Electro. Obecnie współpracujemy z Cleys i Radiance Energy.'],
+      ['2026 / Q4', 'Obecnie', 'Arcadian dziś', 'Obecnie współpracujemy z Cleys i Radiance Energy.'],
       ['2027 / Q1', 'Planowane', 'Pracodawca w Belgii', 'Wpis do KBO/BCE i rejestracja jako pracodawca w RSZ/ONSS.'],
       ['2027 / Q2', 'Planowane', 'Kompleksowe remonty', 'Pełny zakres prac: instalacje sanitarne i elektryczne, dachy, elewacje oraz wykończenie.'],
       ['2028', 'Planowane', 'Zakup gruntu', 'Zakup gruntu pod projekt budowlany.'],
@@ -107,7 +110,7 @@ const copy = {
     investmentText: 'Projekt, finansowanie, odpowiedzialność i warunki ustalamy w podpisanej umowie.',
     emailLabel: 'E-mail', whatsappLabel: 'WhatsApp',
     companyLabel: 'Polska spółka z ograniczoną odpowiedzialnością', addressCountry: 'Polska',
-    accountLabel: 'Rachunek EUR', testLabel: 'DANE TESTOWE', accountNote: 'Tymczasowy przykład. Nie do przelewów.', skip: 'Przejdź do treści',
+    accountLabel: 'Rachunek EUR', beneficiaryLabel: 'Odbiorca', accountNote: 'Przelewy na podstawie podpisanej umowy.', skip: 'Przejdź do treści',
   },
 };
 
@@ -148,7 +151,7 @@ for (const [locale, c] of Object.entries(copy)) {
     <section id="roadmap" class="inv-roadmap inv-section blueprint" aria-labelledby="roadmap-title"><div class="inv-wrap">
       <div class="inv-section-heading"><span class="eyebrow">${esc(c.roadmapLabel)}</span><h2 id="roadmap-title">${esc(c.roadmapTitle)}</h2></div>
       <div class="inv-track-heading"><span>2025 — 2029</span><a href="https://www.linkedin.com/in/tony-k-52657a164/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a></div>
-      <ol class="inv-timeline" aria-label="${esc(c.roadmapTitle)}">${[...c.history, ...c.stages].map(([date, status, title, text], i) => `<li${i < c.history.length ? ' class="is-past"' : i === c.history.length ? ' class="is-current"' : ''}><span class="inv-wire" aria-hidden="true"></span><span class="inv-milestone" aria-hidden="true"></span><div class="inv-stage-copy"><span class="inv-stage-date">${esc(date)}</span><span class="inv-status">${esc(status)}</span><h3>${esc(title)}</h3><p>${i === c.history.length ? companyLinks(text) : esc(text)}</p></div></li>`).join('')}</ol>
+      <ol class="inv-timeline" aria-label="${esc(c.roadmapTitle)}">${[...c.history, ...c.stages].map(([date, status, title, text], i) => `<li${i < c.history.length ? ' class="is-past"' : i === c.history.length ? ' class="is-current"' : ''}><span class="inv-wire" aria-hidden="true"></span><span class="inv-milestone" aria-hidden="true"></span><div class="inv-stage-copy"><span class="inv-stage-date">${esc(date)}</span><span class="inv-status">${esc(status)}</span><h3>${esc(title)}</h3><p>${companyLinks(text)}</p></div></li>`).join('')}</ol>
       <p class="inv-note">${esc(c.roadmapNote)}</p>
     </div></section>
     <section id="partnership" class="inv-contact inv-section" aria-labelledby="partnership-title"><div class="inv-wrap">
@@ -158,7 +161,7 @@ for (const [locale, c] of Object.entries(copy)) {
       </div>
       <div class="inv-company-grid">
         <div class="inv-company"><h3>ARCADIAN Sp. z o.o.</h3><p>${esc(c.companyLabel)}</p><address>ul. Ostrobramska 101/4, 04-041 Warszawa, ${esc(c.addressCountry)}</address><dl><div><dt>KRS</dt><dd>0001242523</dd></div><div><dt>VAT EU</dt><dd>PL1133202795</dd></div><div><dt>REGON</dt><dd>544816335</dd></div></dl></div>
-        <div class="inv-account"><div class="inv-account-heading"><h3>${esc(c.accountLabel)}</h3><span>${esc(c.testLabel)}</span></div><code>0000 0000 0000 0000 0000 0000</code><p>${esc(c.accountNote)}</p></div>
+        <div class="inv-account"><div class="inv-account-heading"><h3>${esc(c.accountLabel)}</h3></div><dl class="inv-bank-details"><div><dt>${esc(c.beneficiaryLabel)}</dt><dd>${esc(bankDetails.beneficiary)}</dd></div><div><dt>IBAN</dt><dd><code>${esc(bankDetails.iban.match(/.{1,4}/g).join(' '))}</code></dd></div><div><dt>BIC</dt><dd><code>${esc(bankDetails.bic)}</code></dd></div></dl><p>${esc(c.accountNote)}</p></div>
       </div>
     </div></section>
   </main>`;
