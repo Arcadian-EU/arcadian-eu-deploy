@@ -1,8 +1,13 @@
 (() => {
   'use strict';
 
-  const german = document.documentElement.lang === 'de';
-  const translate = value => german ? ({'Fit width': 'An Breite anpassen', 'Loading PDF…': 'PDF wird geladen…', 'Loading page…': 'Seite wird geladen…', 'The PDF could not be loaded. Retry or download a copy.': 'Das PDF konnte nicht geladen werden. Versuchen Sie es erneut oder laden Sie eine Kopie herunter.', 'This page could not be displayed. Retry or download a copy.': 'Diese Seite konnte nicht angezeigt werden. Versuchen Sie es erneut oder laden Sie eine Kopie herunter.'}[value] || value) : value;
+  const locale = ['en', 'nl', 'de', 'pl'].includes(document.documentElement.lang) ? document.documentElement.lang : 'en';
+  const translations = {
+    de: {'Fit width': 'An Breite anpassen', 'Loading PDF…': 'PDF wird geladen…', 'Loading page…': 'Seite wird geladen…', 'The PDF could not be loaded. Retry or download a copy.': 'Das PDF konnte nicht geladen werden. Versuchen Sie es erneut oder laden Sie eine Kopie herunter.', 'This page could not be displayed. Retry or download a copy.': 'Diese Seite konnte nicht angezeigt werden. Versuchen Sie es erneut oder laden Sie eine Kopie herunter.', 'Download PDF': 'PDF herunterladen', 'Close': 'Schließen', 'Close PDF preview': 'PDF-Vorschau schließen', 'Previous page': 'Vorherige Seite', 'Next page': 'Nächste Seite', 'Toggle zoom between fit width and 125 percent': 'Zwischen Seitenbreite und 125 Prozent umschalten', 'PDF pages': 'PDF-Seiten', 'Retry': 'Erneut versuchen'},
+    nl: {'Fit width': 'Paginabreedte', 'Loading PDF…': 'PDF laden…', 'Loading page…': 'Pagina laden…', 'The PDF could not be loaded. Retry or download a copy.': 'De PDF kon niet worden geladen. Probeer opnieuw of download een kopie.', 'This page could not be displayed. Retry or download a copy.': 'Deze pagina kon niet worden weergegeven. Probeer opnieuw of download een kopie.', 'Download PDF': 'PDF downloaden', 'Close': 'Sluiten', 'Close PDF preview': 'PDF-voorbeeld sluiten', 'Previous page': 'Vorige pagina', 'Next page': 'Volgende pagina', 'Toggle zoom between fit width and 125 percent': 'Wissel tussen paginabreedte en 125 procent', 'PDF pages': 'PDF-pagina’s', 'Retry': 'Opnieuw proberen'},
+    pl: {'Fit width': 'Dopasuj szerokość', 'Loading PDF…': 'Ładowanie PDF…', 'Loading page…': 'Ładowanie strony…', 'The PDF could not be loaded. Retry or download a copy.': 'Nie udało się wczytać PDF. Spróbuj ponownie lub pobierz kopię.', 'This page could not be displayed. Retry or download a copy.': 'Nie udało się wyświetlić strony. Spróbuj ponownie lub pobierz kopię.', 'Download PDF': 'Pobierz PDF', 'Close': 'Zamknij', 'Close PDF preview': 'Zamknij podgląd PDF', 'Previous page': 'Poprzednia strona', 'Next page': 'Następna strona', 'Toggle zoom between fit width and 125 percent': 'Przełącz między dopasowaniem szerokości a 125 procent', 'PDF pages': 'Strony PDF', 'Retry': 'Spróbuj ponownie'},
+  };
+  const translate = value => translations[locale]?.[value] || value;
 
   const vendor = new URL('../vendor/pdfjs/', document.currentScript.src);
   let rendererPromise;
@@ -75,20 +80,15 @@
     if (ui) return;
     const dialog = document.createElement('dialog');
     dialog.className = 'pdf-dialog';
-    dialog.lang = german ? 'de' : 'en';
+    dialog.lang = locale;
     dialog.setAttribute('aria-labelledby', 'pdf-preview-title');
     dialog.innerHTML = '<div class="pdf-viewer-bar"><div class="pdf-viewer-heading"><strong id="pdf-preview-title"></strong><span class="pdf-viewer-meta"></span></div><div class="pdf-viewer-actions"><a class="pdf-tool pdf-download">Download PDF</a><button type="button" class="pdf-tool pdf-close" autofocus aria-label="Close PDF preview"><span class="pdf-close-label">Close</span><span aria-hidden="true">×</span></button></div></div><div class="pdf-reader-controls"><button type="button" class="pdf-tool pdf-previous" aria-label="Previous page">←</button><span class="pdf-position" role="status" aria-live="polite"></span><button type="button" class="pdf-tool pdf-next" aria-label="Next page">→</button><span class="pdf-controls-spacer"></span><button type="button" class="pdf-tool pdf-zoom" aria-label="Toggle zoom between fit width and 125 percent" aria-pressed="false">Fit width</button></div><div class="pdf-paper-stage" tabindex="0" aria-label="PDF pages"><div class="pdf-viewer-notice"><p class="pdf-status" role="status" aria-live="polite"></p><button type="button" class="pdf-tool pdf-retry" hidden>Retry</button></div><div class="pdf-paper" aria-busy="true"></div></div>';
     document.body.append(dialog);
-    if (german) {
-      dialog.querySelector('.pdf-download').textContent = 'PDF herunterladen';
-      dialog.querySelector('.pdf-close-label').textContent = 'Schließen';
-      dialog.querySelector('.pdf-close').setAttribute('aria-label', 'PDF-Vorschau schließen');
-      dialog.querySelector('.pdf-previous').setAttribute('aria-label', 'Vorherige Seite');
-      dialog.querySelector('.pdf-next').setAttribute('aria-label', 'Nächste Seite');
-      dialog.querySelector('.pdf-zoom').setAttribute('aria-label', 'Zwischen Seitenbreite und 125 Prozent umschalten');
-      dialog.querySelector('.pdf-paper-stage').setAttribute('aria-label', 'PDF-Seiten');
-      dialog.querySelector('.pdf-retry').textContent = 'Erneut versuchen';
+    for (const selector of ['.pdf-download', '.pdf-close-label', '.pdf-retry']) {
+      const item = dialog.querySelector(selector);
+      item.textContent = translate(item.textContent);
     }
+    for (const item of dialog.querySelectorAll('[aria-label]')) item.setAttribute('aria-label', translate(item.getAttribute('aria-label')));
     const find = selector => dialog.querySelector(selector);
     ui = {dialog, title: find('#pdf-preview-title'), meta: find('.pdf-viewer-meta'), download: find('.pdf-download'), close: find('.pdf-close'), previous: find('.pdf-previous'), next: find('.pdf-next'), position: find('.pdf-position'), zoom: find('.pdf-zoom'), stage: find('.pdf-paper-stage'), paper: find('.pdf-paper'), status: find('.pdf-status'), retry: find('.pdf-retry')};
     ui.close.addEventListener('click', close);
@@ -145,6 +145,7 @@
       const document = await loadingTask.promise;
       if (active !== session || !ui.dialog.open) return;
       pdf = document;
+      page = Math.max(1, Math.min(pdf.numPages, Number.isInteger(source.initialPage) ? source.initialPage : 1));
       controls();
       await draw();
     } catch (error) {

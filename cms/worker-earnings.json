@@ -1,0 +1,48 @@
+{
+  "currency": "EUR",
+  "period": "month",
+  "basis": "net_before_accommodation",
+  "source": "Indicative earnings supplied by Arcadian's owner on 2026-10-15",
+  "roles": [
+    {"key": "foreman", "from": 5000, "to": 6000},
+    {"key": "installer", "from": 4000, "to": 4500},
+    {"key": "helper", "from": 2500, "to": 2500, "approximate": true}
+  ],
+  "locales": {
+    "en": {
+      "title": "Typical monthly earnings",
+      "basis": "EUR net per month, before accommodation costs.",
+      "note": "Indicative earnings at Arcadian's piecework rates. Actual earnings depend on the role and accepted work volume.",
+      "housing": "A private room costs EUR 450 per month and is paid separately by the worker.",
+      "roles": {"foreman": "Foreman", "installer": "Experienced installer", "helper": "Construction helper"}
+    },
+    "ru": {
+      "title": "Ориентировочный доход в месяц",
+      "basis": "EUR на руки в месяц, до оплаты проживания.",
+      "note": "Ориентиры при сдельных расценках Arcadian. Фактический доход зависит от роли и принятого объёма работ.",
+      "housing": "Отдельная комната стоит 450 EUR в месяц и оплачивается работником отдельно.",
+      "roles": {"foreman": "Бригадир", "installer": "Опытный монтажник", "helper": "Подсобник"}
+    },
+    "nl": {
+      "title": "Indicatieve maandverdiensten",
+      "basis": "EUR netto per maand, vóór de huisvestingskosten.",
+      "note": "Richtbedragen bij de stukwerktarieven van Arcadian. De werkelijke verdiensten hangen af van de rol en de opgeleverde hoeveelheid werk.",
+      "housing": "Een eigen kamer kost EUR 450 per maand en wordt afzonderlijk door de werknemer betaald.",
+      "roles": {"foreman": "Ploegbaas", "installer": "Ervaren monteur", "helper": "Bouwhelper"}
+    },
+    "de": {
+      "title": "Orientierung zum Monatsverdienst",
+      "basis": "EUR netto pro Monat, vor den Unterkunftskosten.",
+      "note": "Richtwerte bei den Stücksätzen von Arcadian. Der tatsächliche Verdienst hängt von der Rolle und der abgenommenen Arbeitsmenge ab.",
+      "housing": "Ein Einzelzimmer kostet EUR 450 pro Monat und wird vom Mitarbeiter gesondert bezahlt.",
+      "roles": {"foreman": "Vorarbeiter", "installer": "Erfahrener Monteur", "helper": "Bauhelfer"}
+    },
+    "pl": {
+      "title": "Orientacyjne zarobki miesięczne",
+      "basis": "EUR na rękę miesięcznie, przed opłatą za zakwaterowanie.",
+      "note": "Kwoty orientacyjne przy stawkach akordowych Arcadian. Faktyczne zarobki zależą od roli i odebranej ilości prac.",
+      "housing": "Pokój jednoosobowy kosztuje 450 EUR miesięcznie i jest opłacany osobno przez pracownika.",
+      "roles": {"foreman": "Brygadzista", "installer": "Doświadczony monter", "helper": "Pomocnik budowlany"}
+    }
+  }
+}

@@ -1,5 +1,6 @@
-(function () {
+(async function () {
   'use strict';
+  const scriptURL = document.currentScript.src;
   const root = document.querySelector('[data-content-page]');
   if (!root) return;
   const locale = ['en', 'nl', 'de', 'pl'].includes(document.documentElement.lang) ? document.documentElement.lang : 'en';
@@ -22,6 +23,9 @@
   const list = root.querySelector('[data-content-list]');
   const more = root.querySelector('[data-content-more]');
   const type = root.dataset.contentPage;
+  if (type === 'cooperation') return;
+  const caseStudies = type === 'gallery' ? (await import(new URL('project-cases.js', scriptURL))).caseStudies : {};
+  const workerRateSheet = type === 'documents' ? (await import(new URL('worker-rate-sheet.js', scriptURL))).workerRateSheet : null;
   const isDocument = type === 'documents';
   const isRate = type === 'rates' || isDocument;
   let cms;
@@ -113,7 +117,26 @@
     'f3bf65da-eba8-50fd-8721-08cbfdc13ef9': '/assets/portfolio/commercial-electrical-design.pdf',
     'a12be92a-3a72-5f9a-923e-796b9a03c3d0': '/assets/portfolio/lighting-power-design.pdf',
   };
-  const text = (row, field) => String((locale !== 'en' && row[`${field}_${locale}`]) || translatePortfolio(row[field]) || '');
+  const projectLabels = {
+    en: {open: 'View project', installation: 'On site', documentation: 'Plans & diagrams', before: 'Before', during: 'Installation', result: 'Result', selected: 'Project documentation', enlarge: 'Enlarge photograph', drawing: 'View PDF', credit: 'Drawing by', photos: 'Installation photographs'},
+    nl: {open: 'Project bekijken', installation: 'Op de werf', documentation: 'Plannen & schema’s', before: 'Vooraf', during: 'Uitvoering', result: 'Resultaat', selected: 'Projectdocumentatie', enlarge: 'Foto vergroten', drawing: 'PDF bekijken', credit: 'Tekening van', photos: 'Foto’s van de installatie'},
+    de: {open: 'Projekt ansehen', installation: 'Auf der Baustelle', documentation: 'Pläne & Schaltbilder', before: 'Vorher', during: 'Ausführung', result: 'Ergebnis', selected: 'Projektdokumentation', enlarge: 'Foto vergrößern', drawing: 'PDF ansehen', credit: 'Zeichnung von', photos: 'Fotos der Installation'},
+    pl: {open: 'Zobacz projekt', installation: 'Na budowie', documentation: 'Plany i schematy', before: 'Przed pracami', during: 'Montaż', result: 'Efekt', selected: 'Dokumentacja projektu', enlarge: 'Powiększ zdjęcie', drawing: 'Zobacz PDF', credit: 'Autor rysunku', photos: 'Zdjęcia instalacji'},
+  }[locale];
+  const drawingWords = {en: {one: 'drawing', other: 'drawings'}, nl: {one: 'tekening', other: 'tekeningen'}, de: {one: 'Zeichnung', other: 'Zeichnungen'}, pl: {one: 'rysunek', few: 'rysunki', many: 'rysunków', other: 'rysunku'}}[locale];
+  const count = (amount, words) => `${amount} ${words[plural.select(amount)] || words.other}`;
+  const text = (row, field) => {
+    const copy = caseStudies[row.id]?.copy;
+    const fallback = copy?.en[field] === row[field] ? copy[locale]?.[field] : undefined;
+    return String((locale !== 'en' && row[`${field}_${locale}`]) || fallback || translatePortfolio(row[field]) || '');
+  };
+  const photoCaption = (project, photo) => {
+    const study = caseStudies[project.id];
+    const copy = study?.captions[photo.id];
+    const caption = (copy?.en === photo.description && copy[locale]) || text(photo, 'description') || text(project, 'title');
+    const stage = study?.stages?.find(item => item.photos.includes(photo.id));
+    return stage ? `${projectLabels[stage.key]} / ${caption}` : caption;
+  };
   const element = (tag, className, value) => {
     const item = document.createElement(tag);
     if (className) item.className = className;
@@ -138,21 +161,26 @@
   function projectCard(project) {
     const card = element('article', 'work-card');
     const drawingURL = drawingSets[project.id];
+    const study = caseStudies[project.id];
+    const documents = study?.documents || [];
     if (drawingURL) card.classList.add('work-card--drawing');
     const photographs = (project.photos || []).filter((file) => file && fileId(file.id));
     if (photographs.length) {
       const open = element('button', 'work-photo');
       open.type = 'button';
-      open.setAttribute('aria-label', `${drawingURL ? portfolioLabels.design : t.photos}: ${text(project, 'title')}`);
+      open.setAttribute('aria-label', `${study ? projectLabels.open : drawingURL ? portfolioLabels.design : t.photos}: ${text(project, 'title')}`);
+      open.setAttribute('aria-haspopup', 'dialog');
+      const photo = study?.coverPhotos?.map(id => photographs.find(item => item.id === id)).find(Boolean) || photographs[0];
       const image = element('img');
-      image.src = asset(photographs[0].id, 'card');
-      image.srcset = `${asset(photographs[0].id, 'small')} 480w, ${asset(photographs[0].id, 'card')} 960w`;
+      image.src = asset(photo.id, 'card');
+      image.srcset = `${asset(photo.id, 'small')} 480w, ${asset(photo.id, 'card')} 960w`;
       image.sizes = '(max-width: 620px) 100vw, (max-width: 960px) 50vw, 33vw';
-      image.alt = translatePortfolio(photographs[0].description) || text(project, 'title');
+      image.alt = photoCaption(project, photo);
       image.width = 960; image.height = 720;
       image.loading = 'lazy'; image.decoding = 'async';
-      open.append(image, element('span', 'work-count', `${photographs.length} ${drawingURL ? portfolioLabels.drawings : photoWords[plural.select(photographs.length)] || photoWords.other}`));
-      open.addEventListener('click', () => openPhotos(project, photographs));
+      open.append(image);
+      open.append(element('span', 'work-count', count(photographs.length, drawingURL ? drawingWords : photoWords)));
+      open.addEventListener('click', event => openProject(project, photographs, event.currentTarget));
       card.append(open);
     }
     const body = element('div', 'work-body');
@@ -161,7 +189,20 @@
     if (meta) body.append(element('p', 'work-meta', meta));
     body.append(element('p', 'work-description', text(project, 'description')));
     const actions = element('div', 'work-actions');
-    if (drawingURL) {
+    if (study) {
+      const open = element('button', 'work-open', `${projectLabels.open} →`);
+      open.type = 'button';
+      open.setAttribute('aria-haspopup', 'dialog');
+      open.addEventListener('click', event => openProject(project, photographs, event.currentTarget));
+      actions.append(open);
+      if (documents.length) {
+        const download = element('a', 'work-download', 'PDF ↓');
+        download.href = documents[0].url;
+        download.download = `${study.key}-drawings.pdf`;
+        download.setAttribute('aria-label', `${portfolioLabels.download}: ${text(project, 'title')}`);
+        actions.append(download);
+      }
+    } else if (drawingURL) {
       const view = element('button', 'work-open', `${portfolioLabels.view} →`);
       view.type = 'button';
       view.setAttribute('aria-haspopup', 'dialog');
@@ -175,7 +216,7 @@
       const open = element('button', 'work-open', `${portfolioLabels.open} →`);
       open.type = 'button';
       open.setAttribute('aria-haspopup', 'dialog');
-      open.addEventListener('click', () => openPhotos(project, photographs));
+      open.addEventListener('click', event => openProject(project, photographs, event.currentTarget));
       actions.append(open);
     }
     body.append(actions);
@@ -183,7 +224,95 @@
     return card;
   }
 
-  function openPhotos(project, photographs) {
+  function openProject(project, photographs, trigger) {
+    const study = caseStudies[project.id] || {};
+    const drawingsOnly = Boolean(drawingSets[project.id]);
+    const documents = study.documents || (drawingsOnly ? [{url:drawingSets[project.id],pageCount:photographs.length,previews:[]}] : []);
+    const dialog = element('dialog', 'project-dialog');
+    dialog.setAttribute('aria-labelledby', 'project-detail-title');
+    const header = element('div', 'project-header');
+    const heading = element('div');
+    heading.append(element('span', 'eyebrow', t[project.category] || ''));
+    const title = element('h2', '', text(project, 'title'));
+    title.id = 'project-detail-title';
+    const meta = [study.reference, project.location].filter(Boolean).join(' · ');
+    heading.append(title);
+    if (meta) heading.append(element('p', 'work-meta', meta));
+    const close = element('button', 'project-close', `${t.close} ×`);
+    close.type = 'button';
+    close.autofocus = true;
+    close.addEventListener('click', () => dialog.close());
+    header.append(heading, close);
+    const intro = element('p', 'project-intro', text(project, 'description'));
+    const photoCount = element('h3', 'project-section-title', count(photographs.length, drawingsOnly ? drawingWords : photoWords));
+    const photosPanel = element('div', 'project-photos');
+    const docsPanel = element('div', 'project-panel project-documents');
+    photographs.forEach((photo, index) => {
+      const figure = element('figure', 'project-figure');
+      const open = element('button', 'project-photo');
+      open.type = 'button';
+      open.setAttribute('aria-label', `${drawingsOnly ? projectLabels.drawing : projectLabels.enlarge}: ${photoCaption(project, photo)}`);
+      open.setAttribute('aria-haspopup', 'dialog');
+      const image = element('img');
+      image.src = asset(photo.id, 'card');
+      image.srcset = `${asset(photo.id, 'small')} 480w, ${asset(photo.id, 'card')} 960w`;
+      image.sizes = '(max-width: 720px) 50vw, 25vw';
+      image.alt = photoCaption(project, photo);
+      image.width = photo.width; image.height = photo.height;
+      image.loading = 'lazy'; image.decoding = 'async';
+      open.append(image, element('span', 'project-enlarge', '↗'));
+      open.addEventListener('click', event => drawingsOnly ? window.ARCADIAN_PDF_PREVIEW.open({url:new URL(drawingSets[project.id],location.origin).href,title:text(project,'title'),meta:`PDF · ${count(photographs.length,drawingWords)}`,language:locale,initialPage:index+1},event.currentTarget) : openPhotos(project, photographs, index));
+      const caption = element('figcaption', '', `${String(index + 1).padStart(2, '0')} / ${photoCaption(project, photo)}`);
+      caption.title = photoCaption(project, photo);
+      figure.append(open, caption);
+      photosPanel.append(figure);
+    });
+    for (const document of documents) {
+      const summary = element('div', 'project-document-summary');
+      const info = element('div');
+      info.append(element('span', 'eyebrow', projectLabels.selected), element('p', 'work-meta', `PDF · ${count(document.pageCount, drawingWords)}`));
+      if (document.credit) info.append(element('p', 'project-credit', `${projectLabels.credit}: ${document.credit}`));
+      const actions = element('div', 'project-document-actions');
+      const previewPDF = (event, initialPage = 1) => window.ARCADIAN_PDF_PREVIEW.open({url: new URL(document.url, location.origin).href, title: text(project, 'title'), meta: `PDF · ${count(document.pageCount, drawingWords)}`, language: locale, initialPage}, event.currentTarget);
+      const view = element('button', 'btn btn-copper', projectLabels.drawing);
+      view.type = 'button';
+      view.setAttribute('aria-haspopup', 'dialog');
+      view.addEventListener('click', previewPDF);
+      const download = element('a', 'work-download', `${portfolioLabels.download} ↓`);
+      download.href = document.url; download.download = `${study.key || 'project'}-drawings.pdf`;
+      actions.append(view, download); summary.append(info, actions); docsPanel.append(summary);
+      const previews = element('div', 'project-drawing-grid');
+      document.previews.forEach((preview, index) => {
+        const figure = element('figure', 'project-figure');
+        const open = element('button', 'project-drawing');
+        open.type = 'button';
+        const caption = preview.caption[locale] || preview.caption.en;
+        open.setAttribute('aria-label', `${projectLabels.drawing}: ${caption}`);
+        open.setAttribute('aria-haspopup', 'dialog');
+        const image = element('img');
+        image.src = preview.url; image.alt = caption; image.loading = 'lazy';
+        open.append(image, element('span', 'project-enlarge', '↗'));
+        open.addEventListener('click', event => previewPDF(event, index + 1));
+        figure.append(open, element('figcaption', '', `${String(index + 1).padStart(2, '0')} / ${caption}`));
+        previews.append(figure);
+      });
+      if (document.previews.length) docsPanel.append(previews);
+    }
+    dialog.append(header, intro, photoCount, photosPanel);
+    if (documents.length) dialog.append(docsPanel);
+    document.body.append(dialog);
+    const overflow = {html: document.documentElement.style.overflow, body: document.body.style.overflow};
+    dialog.addEventListener('close', () => {
+      document.documentElement.style.overflow = overflow.html;
+      document.body.style.overflow = overflow.body;
+      dialog.remove();
+      if (trigger?.isConnected) trigger.focus({preventScroll: true});
+    }, {once: true});
+    dialog.showModal();
+    document.documentElement.style.overflow = document.body.style.overflow = 'hidden';
+  }
+
+  function openPhotos(project, photographs, initial = 0) {
     const dialog = root.querySelector('[data-photo-dialog]');
     if (!dialog || typeof dialog.showModal !== 'function') return;
     const image = dialog.querySelector('img');
@@ -191,11 +320,11 @@
     const position = dialog.querySelector('[data-photo-position]');
     const previous = dialog.querySelector('[data-photo-previous]');
     const next = dialog.querySelector('[data-photo-next]');
-    let selected = 0;
+    let selected = initial;
     function show() {
       image.src = asset(photographs[selected].id, 'large');
-      image.alt = translatePortfolio(photographs[selected].description) || text(project, 'title');
-      caption.textContent = translatePortfolio(photographs[selected].description) || text(project, 'title');
+      image.alt = photoCaption(project, photographs[selected]);
+      caption.textContent = photoCaption(project, photographs[selected]);
       position.textContent = `${selected + 1} ${t.of} ${photographs.length}`;
       previous.disabled = selected === 0;
       next.disabled = selected === photographs.length - 1;
@@ -230,6 +359,8 @@
 
   function documentCard(row) {
     if (!fileId(row.id)) throw new Error('Invalid document identifier.');
+    const workerSheet = row.id === workerRateSheet?.id ? workerRateSheet : null;
+    if (workerSheet) row = {...row, ...workerSheet.document};
     const card = element('article', 'document-card');
     card.lang = locale === 'de' ? 'de' : 'en';
     const main = element('div', 'document-main');
@@ -261,7 +392,7 @@
     fileInfo.append(element('strong', '', locale === 'de' ? 'Englisches Preisblatt' : 'English rate sheet'), element('span', 'document-meta', meta));
     file.append(icon, fileInfo); main.append(file);
     const actions = element('div', 'document-actions');
-    const documentURL = new URL(`api/documents/${row.id}/`, cms.href.replace(/\/?$/, '/')).href;
+    const documentURL = workerSheet ? new URL(workerSheet.files.en, location.origin).href : new URL(`api/documents/${row.id}/`, cms.href.replace(/\/?$/, '/')).href;
     const view = element('button', 'btn btn-copper', locale === 'de' ? 'Englisches PDF ansehen' : 'View English PDF');
     view.type = 'button';
     view.setAttribute('aria-haspopup', 'dialog');
@@ -270,6 +401,7 @@
     titleButton.addEventListener('click', openPreview);
     const download = element('a', 'btn btn-outline', locale === 'de' ? 'Herunterladen' : 'Download');
     download.href = `${documentURL}?download=1`;
+    if (workerSheet) download.download = workerSheet.files.en.split('/').pop();
     actions.append(view, download); main.append(actions); card.append(main);
     const languages = {nl: 'Nederlands', de: 'Deutsch', pl: 'Polski', ru: 'Русский'};
     const translations = Object.keys(languages).flatMap(language => Array.isArray(row.translations) ? row.translations.filter(item => item.language === language) : []);
@@ -281,8 +413,8 @@
       const files = element('div', 'translation-files');
       for (const item of translations) {
         const attachment = element('div', 'translation-file');
-        const translationURL = new URL(documentURL);
-        translationURL.searchParams.set('language', item.language);
+        const translationURL = new URL(workerSheet ? workerSheet.files[item.language] : documentURL, location.origin);
+        if (!workerSheet) translationURL.searchParams.set('language', item.language);
         const previewURL = translationURL.href;
         const preview = element('button', 'translation-preview');
         preview.type = 'button';
@@ -298,6 +430,7 @@
         const download = element('a', 'translation-download file-arrow', '↓');
         translationURL.searchParams.set('download', '1');
         download.href = translationURL.href;
+        if (workerSheet) download.download = workerSheet.files[item.language].split('/').pop();
         download.setAttribute('aria-label', locale === 'de' ? `PDF herunterladen: ${languages[item.language]}` : `Download ${languages[item.language]} PDF`);
         download.title = locale === 'de' ? `PDF herunterladen: ${languages[item.language]}` : `Download ${languages[item.language]} PDF`;
         attachment.append(preview, download); files.append(attachment);
@@ -323,7 +456,9 @@
       if (!response.ok) throw new Error('Content unavailable.');
       const result = await response.json();
       if (!Array.isArray(result.data)) throw new Error('Invalid content response.');
-      for (const row of result.data) list.append(isDocument ? documentCard(row) : type === 'rates' ? rateCard(row) : projectCard(row));
+      // B2B scope and prices are agreed individually; public PDFs are for workers.
+      const rows = isDocument ? result.data.filter(row => row.category !== 'subcontractors') : result.data;
+      for (const row of rows) list.append(isDocument ? documentCard(row) : type === 'rates' ? rateCard(row) : projectCard(row));
       message(list.childElementCount ? '' : isRate ? t.emptyRates : t.empty);
       more.hidden = result.has_more !== true;
     } catch (error) {
