@@ -228,6 +228,8 @@
     const download = new URL(record.url);
     download.searchParams.set('download', '1');
     ui.download.href = download.href;
+    if (download.origin === location.origin) ui.download.download = download.pathname.split('/').pop();
+    else ui.download.removeAttribute('download');
     scrollLock = {html: window.document.documentElement.style.overflow, body: window.document.body.style.overflow};
     window.document.documentElement.style.overflow = window.document.body.style.overflow = 'hidden';
     ui.dialog.showModal();

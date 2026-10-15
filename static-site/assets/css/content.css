@@ -33,6 +33,17 @@
 .work-body h2,.rate-card h2{font-size:20px;line-height:1.4;margin:9px 0 10px;overflow-wrap:anywhere}
 .work-description{white-space:pre-line;color:var(--muted);font-size:14px;line-height:1.7;overflow-wrap:anywhere}
 .work-meta{font:500 12px var(--mono);color:var(--muted-2);margin-bottom:12px}
+.portfolio-head{padding-top:52px;padding-bottom:38px}
+.work-card{display:flex;flex-direction:column}
+.work-card .work-body{display:flex;flex-direction:column;align-items:flex-start;flex:1}
+.work-card .work-body h2{font-size:19px}
+.work-card .work-description{margin-top:0}
+.work-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;margin-top:auto;padding-top:15px}
+.work-open,.work-download{display:inline-flex;align-items:center;min-height:44px;font:600 12px var(--body);color:var(--copper-deep);background:none;border:0;padding:0;cursor:pointer;text-decoration:none;text-align:left}
+.work-open:hover,.work-download:hover{text-decoration:underline;text-underline-offset:4px}
+.work-open:focus-visible,.work-download:focus-visible,.work-photo:focus-visible{outline:2px solid var(--copper);outline-offset:-2px}
+.work-card--drawing .work-photo{background:#fff}
+.work-card--drawing .work-photo img{object-fit:contain}
 .content-more{display:block;margin:32px auto 0;cursor:pointer}
 .content-cta{border-top:1px solid var(--line);margin-top:48px;padding-top:28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .content-cta p{color:var(--muted)}

@@ -80,6 +80,39 @@
     'Underground service routes during installation.': 'Unterirdische Leitungswege während der Verlegung.',
   };
   const translatePortfolio = value => locale === 'de' ? germanPortfolio[value] || value : value;
+  Object.assign(germanPortfolio, {
+    'Rendered residential facades': 'Verputzte Wohnhausfassaden',
+    'Selected residential facade work: smooth render, window reveals, entrance details and rainwater junctions. Overall views and finishing details from different projects.': 'Ausgewählte Fassadenarbeiten an Wohngebäuden: glatter Putz, Fensterlaibungen, Eingangsdetails und Regenwasseranschlüsse. Gesamtansichten und Ausführungsdetails verschiedener Projekte.',
+    'Timber cladding & facade insulation': 'Holzverkleidung und Fassadendämmung',
+    'Timber-clad gable and facade insulation during renovation. Overall view and installation detail from the same building.': 'Holzverkleideter Giebel und Fassadendämmung während einer Sanierung. Gesamtansicht und Montagedetail desselben Gebäudes.',
+    'Commercial electrical design': 'Elektroplanung für Gewerbegebäude',
+    'Selected drawing excerpts: workshop power layout, cable routes and single-line diagrams for distribution boards. Circuit protection, cable sizing and equipment connections.': 'Ausgewählte Zeichnungsausschnitte: Werkstatt-Stromversorgungsplan, Kabelwege und einpolige Schaltpläne der Verteiler. Stromkreisabsicherung, Kabeldimensionierung und Geräteanschlüsse.',
+    'Lighting, controls & power design': 'Licht-, Steuerungs- und Stromversorgungsplanung',
+    'Selected drawing excerpts: DALI lighting and control groups, socket-outlet layouts and the main single-line diagram. Coordinated plans and circuit references.': 'Ausgewählte Zeichnungsausschnitte: DALI-Beleuchtung und Steuergruppen, Steckdosenpläne und der Hauptstromlaufplan. Abgestimmte Pläne und Stromkreisreferenzen.',
+    'Smooth rendered facade, large glazing and external stair junctions.': 'Glatt verputzte Fassade, große Verglasung und Anschlüsse der Außentreppe.',
+    'Rendered street facade with recessed entrance and window reveals.': 'Verputzte Straßenfassade mit zurückgesetztem Eingang und Fensterlaibungen.',
+    'Rear facade: render finish, openings and plinth junction.': 'Rückfassade: Putzoberfläche, Öffnungen und Sockelanschluss.',
+    'Rendered entrance facade between existing brick elevations.': 'Verputzte Eingangsfassade zwischen bestehenden Ziegelfassaden.',
+    'Coloured render, roof edge and rainwater downpipe junction.': 'Farbiger Putz, Dachrand und Regenfallrohranschluss.',
+    'Overall view of the timber-clad gable and renovated facade.': 'Gesamtansicht des holzverkleideten Giebels und der sanierten Fassade.',
+    'Facade insulation and timber cladding during installation.': 'Fassadendämmung und Holzverkleidung während der Montage.',
+    'Workshop power and cable routes': 'Stromversorgung und Kabelwege der Werkstatt',
+    'Main distribution: circuits and protection': 'Hauptverteilung: Stromkreise und Schutz',
+    'Distribution: equipment and auxiliary services': 'Verteilung: Geräte und Nebenanlagen',
+    'DALI lighting layout and control groups': 'DALI-Beleuchtungsplan und Steuergruppen',
+    'Socket outlets and power distribution layout': 'Steckdosen- und Stromversorgungsplan',
+    'Single-line diagram: distribution and protection': 'Einpoliger Schaltplan: Verteilung und Schutz',
+  });
+  const portfolioLabels = {
+    en: {design: 'Electrical design', drawings: 'drawings', view: 'View drawing set', download: 'Download PDF', open: 'View album', sheets: '3 sheets'},
+    nl: {design: 'Elektrisch ontwerp', drawings: 'tekeningen', view: 'Tekeningen bekijken', download: 'PDF downloaden', open: 'Album bekijken', sheets: '3 bladen'},
+    pl: {design: 'Projektowanie elektryczne', drawings: 'rysunki', view: 'Zobacz rysunki', download: 'Pobierz PDF', open: 'Zobacz album', sheets: '3 arkusze'},
+    de: {design: 'Elektroplanung', drawings: 'Zeichnungen', view: 'Zeichnungen ansehen', download: 'PDF herunterladen', open: 'Album ansehen', sheets: '3 Blätter'},
+  }[locale];
+  const drawingSets = {
+    'f3bf65da-eba8-50fd-8721-08cbfdc13ef9': '/assets/portfolio/commercial-electrical-design.pdf',
+    'a12be92a-3a72-5f9a-923e-796b9a03c3d0': '/assets/portfolio/lighting-power-design.pdf',
+  };
   const text = (row, field) => String((locale !== 'en' && row[`${field}_${locale}`]) || translatePortfolio(row[field]) || '');
   const element = (tag, className, value) => {
     const item = document.createElement(tag);
@@ -104,11 +137,13 @@
 
   function projectCard(project) {
     const card = element('article', 'work-card');
+    const drawingURL = drawingSets[project.id];
+    if (drawingURL) card.classList.add('work-card--drawing');
     const photographs = (project.photos || []).filter((file) => file && fileId(file.id));
     if (photographs.length) {
       const open = element('button', 'work-photo');
       open.type = 'button';
-      open.setAttribute('aria-label', `${t.photos}: ${text(project, 'title')}`);
+      open.setAttribute('aria-label', `${drawingURL ? portfolioLabels.design : t.photos}: ${text(project, 'title')}`);
       const image = element('img');
       image.src = asset(photographs[0].id, 'card');
       image.srcset = `${asset(photographs[0].id, 'small')} 480w, ${asset(photographs[0].id, 'card')} 960w`;
@@ -116,15 +151,34 @@
       image.alt = translatePortfolio(photographs[0].description) || text(project, 'title');
       image.width = 960; image.height = 720;
       image.loading = 'lazy'; image.decoding = 'async';
-      open.append(image, element('span', 'work-count', `${photographs.length} ${photoWords[plural.select(photographs.length)] || photoWords.other}`));
+      open.append(image, element('span', 'work-count', `${photographs.length} ${drawingURL ? portfolioLabels.drawings : photoWords[plural.select(photographs.length)] || photoWords.other}`));
       open.addEventListener('click', () => openPhotos(project, photographs));
       card.append(open);
     }
     const body = element('div', 'work-body');
-    body.append(element('span', 'eyebrow', t[project.category] || ''), element('h2', '', text(project, 'title')));
+    body.append(element('span', 'eyebrow', drawingURL ? portfolioLabels.design : t[project.category] || ''), element('h2', '', text(project, 'title')));
     const meta = [project.location, project.completed_year].filter(Boolean).join(' · ');
     if (meta) body.append(element('p', 'work-meta', meta));
     body.append(element('p', 'work-description', text(project, 'description')));
+    const actions = element('div', 'work-actions');
+    if (drawingURL) {
+      const view = element('button', 'work-open', `${portfolioLabels.view} →`);
+      view.type = 'button';
+      view.setAttribute('aria-haspopup', 'dialog');
+      view.addEventListener('click', event => window.ARCADIAN_PDF_PREVIEW.open({url: new URL(drawingURL, location.origin).href, title: text(project, 'title'), meta: `PDF · ${portfolioLabels.sheets}`, language: locale}, event.currentTarget));
+      const download = element('a', 'work-download', 'PDF ↓');
+      download.href = drawingURL;
+      download.download = drawingURL.split('/').pop();
+      download.setAttribute('aria-label', `${portfolioLabels.download}: ${text(project, 'title')}`);
+      actions.append(view, download);
+    } else if (photographs.length) {
+      const open = element('button', 'work-open', `${portfolioLabels.open} →`);
+      open.type = 'button';
+      open.setAttribute('aria-haspopup', 'dialog');
+      open.addEventListener('click', () => openPhotos(project, photographs));
+      actions.append(open);
+    }
+    body.append(actions);
     card.append(body);
     return card;
   }
