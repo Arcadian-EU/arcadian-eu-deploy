@@ -1,10 +1,11 @@
-# DigitalOcean App Platform spec — the source of truth for the arcadian-eu app.
-# Applied automatically by .github/workflows/deploy.yml on every push to main
-# (digitalocean/app_action picks this file up from its default location).
+# DigitalOcean App Platform spec for the arcadian-eu app.
+# Corporate source: arcadian-spzoo.ghe.com/Arcadian-EU/arcadian-eu-deploy.
+# The company-owned GitHub.com publication repository supplies App Platform.
+# Its deploy workflow applies this spec after checks pass.
 #
 # The contact form posts straight to https://werfvolt.be/api/public/leads/form.
 # This app has no server function or secret; its public Turnstile sitekey is
-# injected into the three localized forms during the static build.
+# injected into the four localized forms during the static build.
 name: arcadian-eu
 region: fra
 alerts:
@@ -31,7 +32,7 @@ static_sites:
   - name: arcadian-landing
     environment_slug: html
     git:
-      repo_clone_url: https://github.com/tosik-228/arcadian-eu-deploy.git
+      repo_clone_url: https://github.com/Arcadian-EU/arcadian-eu-deploy.git
       branch: main
     source_dir: static-site
     build_command: sh ./build-turnstile-site.sh

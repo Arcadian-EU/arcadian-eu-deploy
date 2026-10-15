@@ -1,8 +1,8 @@
 name: Checks & Deploy
 
-# Push to main → validate the HTML, check every link, deploy the App Platform
-# spec (.do/app.yaml) + static site to DigitalOcean, then smoke-test the live
-# site. Pull requests run the checks only.
+# Corporate GHE validates the source. Promoting the same reviewed commit to the
+# company-owned GitHub.com publication repository also deploys App Platform.
+# Pull requests and GHE runs execute checks without production credentials.
 #
 # One-time setup: add a DigitalOcean API token (Apps read/write) as the
 # DIGITALOCEAN_ACCESS_TOKEN repository secret and a public Turnstile sitekey
@@ -27,7 +27,10 @@ jobs:
         run: node --check static-site/assets/js/contact-form.js
       - run: npm ci --ignore-scripts
       - name: Check gallery JavaScript
-        run: node --check static-site/assets/js/content.js
+        run: |
+          node --check static-site/assets/js/content.js
+          node --check static-site/assets/js/investors.js
+          node --check static-site/assets/js/pdf-preview.js
       - name: Build static site with Turnstile configuration
         # Deliberately not a Cloudflare test or production key: this only
         # exercises deterministic config injection and fail-closed checks.
@@ -81,7 +84,10 @@ jobs:
         run: docker build --tag arcadian-cms:ci cms
 
   deploy:
-    if: github.event_name != 'pull_request'
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.server_url == 'https://github.com' &&
+      github.repository == 'Arcadian-EU/arcadian-eu-deploy'
     needs: [checks, cms]
     runs-on: ubuntu-latest
     env:
@@ -134,7 +140,9 @@ jobs:
     steps:
       - name: Live pages respond
         run: |
-          for url in https://arcadian-eu.com/ https://arcadian-eu.com/pl/ https://arcadian-eu.com/nl/ \
+          for url in https://arcadian-eu.com/ https://arcadian-eu.com/nl/ https://arcadian-eu.com/de/ https://arcadian-eu.com/pl/ \
+                     https://arcadian-eu.com/investors/ https://arcadian-eu.com/nl/investors/ \
+                     https://arcadian-eu.com/de/investors/ https://arcadian-eu.com/pl/investors/ \
                      https://arcadian-eu.com/privacy/ https://www.arcadian-eu.com/; do
             echo "GET $url"
             curl -fsS -o /dev/null --retry 3 --retry-delay 5 "$url"

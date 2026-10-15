@@ -35,7 +35,7 @@ if need('S3_BUCKET') == need('BACKUP_S3_BUCKET'):
     raise SystemExit('Media and backups must use separate buckets.')
 if not need('BACKUP_AGE_RECIPIENT').startswith('age1'):
     raise SystemExit('Configure the public age recipient; never place the private identity in the service.')
-base = {'github': {'repo': 'tosik-228/arcadian-eu-deploy', 'branch': 'main', 'deploy_on_push': False},
+base = {'github': {'repo': 'Arcadian-EU/arcadian-eu-deploy', 'branch': 'main', 'deploy_on_push': False},
         'source_dir': 'cms', 'dockerfile_path': 'cms/Dockerfile', 'instance_count': 1, 'instance_size_slug': 'apps-s-1vcpu-1gb'}
 common = [env('DJANGO_ENV', 'production'), env('CMS_URL'), env('CMS_ALLOWED_HOSTS', 'cms.arcadian-eu.com,${APP_DOMAIN}'),
           env('CMS_SECRET', secret=True), env('SITE_ORIGINS', 'https://arcadian-eu.com,https://www.arcadian-eu.com'),
