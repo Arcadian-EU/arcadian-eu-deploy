@@ -443,3 +443,9 @@ footer.site-footer{background:var(--ink);color:#8b93a8;padding:54px 24px 34px}
   .nav .spacer{display:none}
 }
 @media(max-width:380px){.nav .brand-lock .word{font-size:12.5px;letter-spacing:.1em}}
+
+/* Renovation positioning: a documented site project leads the homepage. */
+.renovation-visual{margin:0;min-width:0}
+.renovation-visual img{display:block;width:100%;height:auto;max-height:540px;aspect-ratio:4/5;object-fit:cover;object-position:50% 54%;border:1px solid rgba(255,255,255,.15);border-radius:14px}
+.renovation-visual figcaption{margin-top:12px;color:#a9b0c2;font:400 12px var(--mono)}
+@media(max-width:960px){.renovation-visual{max-width:600px}.renovation-visual img{max-height:460px;aspect-ratio:4/3}}
