@@ -7,6 +7,7 @@ CMS_URL="${CMS_PUBLIC_URL:-}"
 SITE_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 OUTPUT_DIR="$SITE_DIR/dist"
 TEMP_DIR=""
+BUILD_COMMIT="${SOURCE_COMMIT:-${GITHUB_SHA:-}}"
 
 cleanup() {
   if [ -n "$TEMP_DIR" ] && [ -d "$TEMP_DIR" ]; then
@@ -15,6 +16,14 @@ cleanup() {
 }
 trap cleanup EXIT
 trap 'exit 1' HUP INT TERM
+
+if [ -z "$BUILD_COMMIT" ]; then
+  BUILD_COMMIT=$(git -C "$SITE_DIR/.." rev-parse HEAD 2>/dev/null || true)
+fi
+if ! printf '%s' "$BUILD_COMMIT" | grep -Eq '^[0-9a-f]{40}$'; then
+  echo 'SOURCE_COMMIT must be a full Git commit hash.' >&2
+  exit 1
+fi
 
 if [ -z "$SITEKEY" ] || [ "$SITEKEY" = "$PLACEHOLDER" ]; then
   echo "TURNSTILE_SITEKEY must be configured; refusing to build an unprotected form." >&2
@@ -67,6 +76,7 @@ for relative_page in index.html nl/index.html de/index.html pl/index.html; do
 done
 
 printf 'window.ARCADIAN_CMS_URL = "%s";\n' "$CMS_URL" > "$TEMP_DIR/assets/js/content-config.js"
+printf '{"commit":"%s"}\n' "$BUILD_COMMIT" > "$TEMP_DIR/deployment.json"
 
 if grep -R -F -q "$PLACEHOLDER" "$TEMP_DIR"; then
   echo "Unresolved Turnstile sitekey placeholder remains in build output." >&2

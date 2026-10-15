@@ -1,8 +1,8 @@
 name: Checks & Deploy
 
-# Corporate GHE validates the source. Promoting the same reviewed commit to the
-# company-owned GitHub.com publication repository also deploys App Platform.
-# Pull requests and GHE runs execute checks without production credentials.
+# Corporate GHE validates main, promotes that exact commit using a repository
+# deploy key, and waits for its served marker. The company-owned mirror deploys
+# App Platform. Pull requests only run checks.
 #
 # One-time setup: add a DigitalOcean API token (Apps read/write) as the
 # DIGITALOCEAN_ACCESS_TOKEN repository secret and a public Turnstile sitekey
@@ -15,6 +15,14 @@ on:
     branches: [main]
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+
+# Keep a running publication intact; a pending run may be superseded by a newer one.
+concurrency:
+  group: arcadian-site-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   checks:
     runs-on: ubuntu-latest
@@ -25,6 +33,8 @@ jobs:
           node-version: "22"
       - name: Check contact-form JavaScript
         run: node --check static-site/assets/js/contact-form.js
+      - name: Test publication ordering and deployment proof
+        run: python3 -m unittest discover -s .github/scripts -p 'test_*.py' -v
       - run: npm ci --ignore-scripts
       - name: Check gallery JavaScript
         run: |
@@ -85,6 +95,39 @@ jobs:
       - name: Build unprivileged CMS image
         run: docker build --tag arcadian-cms:ci cms
 
+  mirror:
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      github.server_url == 'https://arcadian-spzoo.ghe.com' &&
+      github.repository == 'Arcadian-EU/arcadian-eu-deploy'
+    needs: [checks, cms]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Publish checked commit and verify its live marker
+        env:
+          PUBLICATION_DEPLOY_KEY: ${{ secrets.PUBLICATION_DEPLOY_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "$PUBLICATION_DEPLOY_KEY" ]; then
+            echo '::error::PUBLICATION_DEPLOY_KEY is not configured in corporate GHE.'
+            exit 1
+          fi
+          umask 077
+          key_dir=$(mktemp -d "$RUNNER_TEMP/arcadian-publisher.XXXXXX")
+          trap 'rm -rf "$key_dir"' EXIT
+          printf '%s\n' "$PUBLICATION_DEPLOY_KEY" > "$key_dir/id_ed25519"
+          unset PUBLICATION_DEPLOY_KEY
+          printf -v GIT_SSH_COMMAND 'ssh -i %q -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=%q' \
+            "$key_dir/id_ed25519" "$GITHUB_WORKSPACE/.github/github_known_hosts"
+          export GIT_SSH_COMMAND
+          python3 .github/scripts/publish_site.py
+
   deploy:
     if: >-
       github.event_name != 'pull_request' &&
@@ -101,6 +144,11 @@ jobs:
           echo "::error::DIGITALOCEAN_ACCESS_TOKEN secret is not set. Create a DigitalOcean API token (Apps scope) and add it once under Settings → Secrets → Actions, then re-run this workflow."
           exit 1
       - uses: actions/checkout@v4
+      - name: Bind the build to this publication commit
+        shell: bash
+        run: |
+          [[ "$GITHUB_SHA" =~ ^[0-9a-f]{40}$ ]]
+          sed -i "s|__SOURCE_COMMIT__|$GITHUB_SHA|g" .do/app.yaml
       - name: Require ready CMS and configure public endpoint
         env:
           CMS_PUBLIC_URL: ${{ vars.CMS_PUBLIC_URL }}
@@ -140,6 +188,12 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Verify the exact served commit
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          curl -fsS --retry 3 --retry-delay 5 "https://arcadian-eu.com/deployment.json?commit=$EXPECTED_SHA" \
+            | python3 -c 'import json,os,sys; assert json.load(sys.stdin)["commit"] == os.environ["EXPECTED_SHA"]'
       - name: Live pages respond
         run: |
           for url in https://arcadian-eu.com/ https://arcadian-eu.com/nl/ https://arcadian-eu.com/de/ https://arcadian-eu.com/pl/ \
