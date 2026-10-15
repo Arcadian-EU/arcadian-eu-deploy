@@ -79,6 +79,8 @@ jobs:
           cache-dependency-path: cms/requirements.txt
       - run: pip install --require-hashes -r cms/requirements.txt
       - run: python cms/manage.py makemigrations --check --dry-run
+      - name: Collect CMS static assets for admin acceptance tests
+        run: python cms/manage.py collectstatic --noinput
       - run: python cms/manage.py test content --noinput
       - name: Build unprivileged CMS image
         run: docker build --tag arcadian-cms:ci cms
