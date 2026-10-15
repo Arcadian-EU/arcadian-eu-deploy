@@ -46,6 +46,10 @@ static_sites:
         scope: BUILD_TIME
         type: GENERAL
         value: __CMS_PUBLIC_URL__
+      - key: SOURCE_COMMIT
+        scope: BUILD_TIME
+        type: GENERAL
+        value: __SOURCE_COMMIT__
     index_document: index.html
     # No catchall: unknown paths must be real 404s (with catchall every URL answered
     # 200 with the homepage — soft-404 duplicates for search engines).
