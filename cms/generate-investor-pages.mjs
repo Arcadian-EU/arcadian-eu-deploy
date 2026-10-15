@@ -2,8 +2,10 @@ import {readFile, writeFile, mkdir, readdir} from 'node:fs/promises';
 import {languageMenu, refreshSiteLanguages} from './site-languages.mjs';
 
 const root = new URL('../static-site/', import.meta.url);
-const release = 'investors-20261015-v11';
+const release = 'investors-20261015-v14';
 const roadmapAsOf = '2026-10-15';
+// Company split follows the owner's approved August 2026 chronology.
+const companySplitMonth = '2026-08';
 // Calendar anchors are the starts of the displayed periods, not promised completion dates.
 const roadmapDates = ['2025-03-01', '2026-08-01', '2026-10-01', '2027-01-01', '2027-04-01', '2028-01-01', '2029-01-01'];
 const esc = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('"', '&quot;');
@@ -31,22 +33,22 @@ const corporateLinkedIn = 'https://www.linkedin.com/company/arcadian-eu/';
 const companyLinks = text => collaborators.reduce((html, [name, number, legalName]) => html.replaceAll(name, `<a href="https://kbopub.economie.fgov.be/kbopub/zoeknummerform.html?nummer=${number}" target="_blank" rel="noopener noreferrer" title="KBO · ${legalName} · ${number}">${name}</a>`), esc(text));
 const copy = {
   en: {
-    prefix: '', name: 'Investors', title: 'Electrical design. Construction expertise.',
-    description: 'Electrical and plumbing design, electrical installation, PV systems, facades and roofs. Next steps: renovation and property development in Belgium.',
-    eyebrow: 'ARCADIAN / FOR INVESTORS', hero: 'Electrical design.', heroAccent: 'Construction expertise.',
-    lead: 'We design electrical and plumbing systems. We install electrical and PV systems, complete facades and roofs, and deliver plumbing with subcontractor partners.',
-    services: ['Electrical & plumbing design', 'Electrical installation & PV', 'Complete facades & roofs', 'Plumbing with partner teams'],
+    prefix: '', name: 'Investors', title: 'Construction expertise. Our own software.',
+    description: 'Construction work in Belgium and Werfvolt, our software developed in-house for our own teams. Explore ARCADIAN’s experience, team and development plans.',
+    eyebrow: 'ARCADIAN / FOR INVESTORS', hero: 'Construction expertise.', heroAccent: 'Our own software.',
+    lead: 'We deliver construction work in Belgium and develop Werfvolt in-house — software shaped by the daily work of our own teams.',
+    services: ['Facades & roofs', 'Electrical & plumbing design', 'Electrical installation & PV', 'Werfvolt · in-house software'],
     work: 'Our work', gallery: 'Completed work is in our gallery. Project drawings will be added.',
-    photoAlt: 'Facade installation from the Arcadian work portfolio.', photoCaption: 'Arcadian portfolio · facade installation',
-    contact: 'Contact the founder', roadmapLink: 'Roadmap', teamLink: 'Team',
+    contact: 'Partnership enquiries', roadmapLink: 'Roadmap', teamLink: 'Team',
     teamTitle: 'Current delivery team', teamDate: 'As of 15 October 2026',
     team: [['2', 'Engineers'], ['5', 'Facade specialists'], ['4', 'Electricians'], ['2', 'Roofers']],
     teamPartners: 'Plumbing · subcontractor partners',
     roadmapLabel: 'THE ROADMAP', roadmapTitle: 'Experience. Next steps.', roadmapNote: 'Planned dates. Timing may change.', nowLabel: 'NOW',
+    splitLabel: 'Separate paths', forkLabel: 'Trade-Pass follows a separate path. Arcadian continues along this roadmap.',
     turnoverTitle: 'Turnover · EUR', turnoverNote: 'Approximate figures supplied by the founder.', turnoverActual: 'Achieved', turnoverPlanned: 'Planned',
     history: [
-      ['MAR 2025 – AUG 2026', 'Co-founder', 'TRADE-PASS Sp. z o.o.', 'Co-founded and developed the business. Worked with Suren Electro BV. Concluded the role in August 2026 following an ownership transition.'],
-      ['AUG 2026', 'Founder', 'ARCADIAN Sp. z o.o.', 'Founder & Managing Director from August 2026. Electrical design, installation and project delivery in Europe.'],
+      ['MAR 2025 – AUG 2026', 'Construction', 'TRADE-PASS Sp. z o.o.', 'Construction operations under Trade-Pass, including collaboration with Suren Electro BV.'],
+      ['AUG 2026', '', '', ''],
     ],
     stages: [
       ['2026 / Q4', 'Current', 'ARCADIAN Sp. z o.o.', 'Current collaboration with Cleys BV and Radiance Belgium NV.'],
@@ -56,30 +58,30 @@ const copy = {
       ['2029', 'Planned', 'Build. Sell.', 'Build the property and sell the completed asset.'],
     ],
     founderRole: 'Founder · Design & delivery',
-    founderBio: 'I design electrical and plumbing systems and take responsibility for project delivery. Contact me directly.',
-    investmentLabel: 'PARTNERSHIP', investmentTitle: 'Interested in investing?',
+    founderBio: 'I design electrical and plumbing systems and take responsibility for project delivery.',
+    investmentLabel: 'PARTNERSHIP', investmentTitle: 'A conversation about partnership',
     investmentText: 'We agree the project, funding, responsibilities and terms in a signed contract.',
     emailLabel: 'Email', whatsappLabel: 'WhatsApp',
     companyLabel: 'Polish limited liability company', addressCountry: 'Poland',
     accountLabel: 'EUR account', beneficiaryLabel: 'Beneficiary', accountNote: 'Transfers under a signed agreement.', skip: 'Skip to content',
   },
   nl: {
-    prefix: 'nl/', name: 'Investeerders', title: 'Elektrisch ontwerp. Bouwexpertise.',
-    description: 'Ontwerp van elektriciteit en sanitair, elektrische installaties, PV, gevels en daken. Volgende stappen: totaalrenovatie en vastgoedontwikkeling in België.',
-    eyebrow: 'ARCADIAN / VOOR INVESTEERDERS', hero: 'Elektrisch ontwerp.', heroAccent: 'Bouwexpertise.',
-    lead: 'We ontwerpen elektrische en sanitaire systemen. We plaatsen elektrische en PV-installaties, werken gevels en daken volledig af en voeren sanitair uit met onderaannemers.',
-    services: ['Elektrisch & sanitair ontwerp', 'Elektrische installaties & PV', 'Volledige gevel- & dakwerken', 'Sanitair met partnerploegen'],
+    prefix: 'nl/', name: 'Investeerders', title: 'Bouwexpertise. Onze eigen software.',
+    description: 'Bouwwerkzaamheden in België en Werfvolt, software die we zelf ontwikkelen voor onze eigen teams. Ontdek de ervaring, het team en de plannen van ARCADIAN.',
+    eyebrow: 'ARCADIAN / VOOR INVESTEERDERS', hero: 'Bouwexpertise.', heroAccent: 'Onze eigen software.',
+    lead: 'We voeren bouwwerkzaamheden uit in België en ontwikkelen zelf Werfvolt — software die voortkomt uit het dagelijkse werk van onze eigen teams.',
+    services: ['Gevels & daken', 'Elektrisch & sanitair ontwerp', 'Elektrische installaties & PV', 'Werfvolt · eigen software'],
     work: 'Onze werken', gallery: 'Uitgevoerde werken staan in onze galerij. Projecttekeningen volgen.',
-    photoAlt: 'Gevelmontage uit het werkportfolio van Arcadian.', photoCaption: 'Arcadian portfolio · gevelmontage',
-    contact: 'Contacteer de oprichter', roadmapLink: 'Roadmap', teamLink: 'Team',
+    contact: 'Samenwerking bespreken', roadmapLink: 'Roadmap', teamLink: 'Team',
     teamTitle: 'Huidige uitvoeringsploeg', teamDate: 'Stand op 15 oktober 2026',
     team: [['2', 'Ingenieurs'], ['5', 'Gevelwerkers'], ['4', 'Elektriciens'], ['2', 'Dakwerkers']],
     teamPartners: 'Sanitair · onderaannemers',
     roadmapLabel: 'DE ROADMAP', roadmapTitle: 'Ervaring. Volgende stappen.', roadmapNote: 'Geplande termijnen. Timing kan wijzigen.', nowLabel: 'NU',
+    splitLabel: 'Eigen trajecten', forkLabel: 'Trade-Pass volgt een eigen koers. Arcadian gaat verder volgens deze roadmap.',
     turnoverTitle: 'Omzet · EUR', turnoverNote: 'Benaderende cijfers verstrekt door de oprichter.', turnoverActual: 'Gerealiseerd', turnoverPlanned: 'Gepland',
     history: [
-      ['MRT 2025 – AUG 2026', 'Medeoprichter', 'TRADE-PASS Sp. z o.o.', 'Het bedrijf mee opgericht en ontwikkeld. Samengewerkt met Suren Electro BV. De rol in augustus 2026 afgerond na een wijziging in de eigendomsstructuur.'],
-      ['AUG 2026', 'Oprichter', 'ARCADIAN Sp. z o.o.', 'Oprichter en algemeen directeur sinds augustus 2026. Elektrisch ontwerp, installaties en projectuitvoering in Europa.'],
+      ['MRT 2025 – AUG 2026', 'Bouwactiviteiten', 'TRADE-PASS Sp. z o.o.', 'Bouwwerkzaamheden binnen Trade-Pass, met onder meer een samenwerking met Suren Electro BV.'],
+      ['AUG 2026', '', '', ''],
     ],
     stages: [
       ['2026 / Q4', 'Huidig', 'ARCADIAN Sp. z o.o.', 'Huidige samenwerking met Cleys BV en Radiance Belgium NV.'],
@@ -89,30 +91,30 @@ const copy = {
       ['2029', 'Gepland', 'Bouwen. Verkopen.', 'Het pand bouwen en het afgewerkte vastgoed verkopen.'],
     ],
     founderRole: 'Oprichter · Ontwerp & uitvoering',
-    founderBio: 'Ik ontwerp elektrische en sanitaire systemen en neem de verantwoordelijkheid voor de projectuitvoering. Contacteer mij rechtstreeks.',
-    investmentLabel: 'SAMENWERKING', investmentTitle: 'Interesse om te investeren?',
+    founderBio: 'Ik ontwerp elektrische en sanitaire systemen en neem de verantwoordelijkheid voor de projectuitvoering.',
+    investmentLabel: 'SAMENWERKING', investmentTitle: 'Een gesprek over samenwerking',
     investmentText: 'We leggen het project, de financiering, verantwoordelijkheden en voorwaarden vast in een ondertekend contract.',
     emailLabel: 'E-mail', whatsappLabel: 'WhatsApp',
     companyLabel: 'Poolse vennootschap met beperkte aansprakelijkheid', addressCountry: 'Polen',
     accountLabel: 'EUR-rekening', beneficiaryLabel: 'Begunstigde', accountNote: 'Overschrijvingen op basis van een ondertekende overeenkomst.', skip: 'Naar de inhoud',
   },
   pl: {
-    prefix: 'pl/', name: 'Inwestorzy', title: 'Projekty elektryczne. Doświadczenie budowlane.',
-    description: 'Projekty instalacji elektrycznych i sanitarnych, montaż elektryki, PV, elewacje i dachy. Kolejne etapy: kompleksowe remonty i rozwój nieruchomości w Belgii.',
-    eyebrow: 'ARCADIAN / DLA INWESTORÓW', hero: 'Projekty elektryczne.', heroAccent: 'Doświadczenie budowlane.',
-    lead: 'Projektujemy instalacje elektryczne i sanitarne. Montujemy elektrykę i systemy PV, wykonujemy całe elewacje i dachy, a prace sanitarne realizujemy z podwykonawcami.',
-    services: ['Projekty elektryczne i sanitarne', 'Montaż elektryki i PV', 'Kompletne elewacje i dachy', 'Instalacje sanitarne z partnerami'],
+    prefix: 'pl/', name: 'Inwestorzy', title: 'Doświadczenie budowlane. Własne oprogramowanie.',
+    description: 'Prace budowlane w Belgii i Werfvolt — oprogramowanie tworzone przez nas dla własnych zespołów. Poznaj doświadczenie, zespół i plany rozwoju ARCADIAN.',
+    eyebrow: 'ARCADIAN / DLA INWESTORÓW', hero: 'Doświadczenie budowlane.', heroAccent: 'Własne oprogramowanie.',
+    lead: 'Realizujemy prace budowlane w Belgii i sami tworzymy Werfvolt — oprogramowanie wynikające z codziennej pracy naszych własnych zespołów.',
+    services: ['Elewacje i dachy', 'Projekty elektryczne i sanitarne', 'Montaż elektryki i PV', 'Werfvolt · własne oprogramowanie'],
     work: 'Nasze prace', gallery: 'Zrealizowane prace są w naszej galerii. Rysunki projektowe dodamy później.',
-    photoAlt: 'Montaż elewacji z portfolio prac Arcadian.', photoCaption: 'Portfolio Arcadian · montaż elewacji',
-    contact: 'Kontakt z założycielem', roadmapLink: 'Plan rozwoju', teamLink: 'Zespół',
+    contact: 'Rozmowa o współpracy', roadmapLink: 'Plan rozwoju', teamLink: 'Zespół',
     teamTitle: 'Obecny zespół wykonawczy', teamDate: 'Stan na 15 października 2026',
     team: [['2', 'Inżynierów'], ['5', 'Fachowców od elewacji'], ['4', 'Elektryków'], ['2', 'Dekarzy']],
     teamPartners: 'Instalacje sanitarne · podwykonawcy',
     roadmapLabel: 'PLAN ROZWOJU', roadmapTitle: 'Doświadczenie. Kolejne etapy.', roadmapNote: 'Planowane terminy. Harmonogram może się zmienić.', nowLabel: 'TERAZ',
+    splitLabel: 'Osobne kierunki', forkLabel: 'Trade-Pass podąża osobną drogą. Arcadian kontynuuje rozwój zgodnie z tym planem.',
     turnoverTitle: 'Obrót · EUR', turnoverNote: 'Przybliżone kwoty podane przez założyciela.', turnoverActual: 'Osiągnięty', turnoverPlanned: 'Planowany',
     history: [
-      ['III 2025 – VIII 2026', 'Współzałożyciel', 'TRADE-PASS Sp. z o.o.', 'Współtworzenie i rozwój firmy. Współpraca z Suren Electro BV. Zakończenie roli w sierpniu 2026 po zmianie struktury właścicielskiej.'],
-      ['VIII 2026', 'Założyciel', 'ARCADIAN Sp. z o.o.', 'Założyciel i dyrektor zarządzający od sierpnia 2026. Projekty elektryczne, montaż i realizacja projektów w Europie.'],
+      ['III 2025 – VIII 2026', 'Budownictwo', 'TRADE-PASS Sp. z o.o.', 'Działalność budowlana w ramach Trade-Pass, w tym współpraca z Suren Electro BV.'],
+      ['VIII 2026', '', '', ''],
     ],
     stages: [
       ['2026 / Q4', 'Obecnie', 'ARCADIAN Sp. z o.o.', 'Obecnie współpracujemy z Cleys BV i Radiance Belgium NV.'],
@@ -122,8 +124,8 @@ const copy = {
       ['2029', 'Planowane', 'Budowa. Sprzedaż.', 'Budowa nieruchomości i sprzedaż gotowego obiektu.'],
     ],
     founderRole: 'Założyciel · Projektowanie i realizacja',
-    founderBio: 'Projektuję instalacje elektryczne i sanitarne oraz odpowiadam za realizację projektu. Skontaktuj się ze mną bezpośrednio.',
-    investmentLabel: 'WSPÓŁPRACA', investmentTitle: 'Chcesz zainwestować?',
+    founderBio: 'Projektuję instalacje elektryczne i sanitarne oraz odpowiadam za realizację projektu.',
+    investmentLabel: 'WSPÓŁPRACA', investmentTitle: 'Porozmawiajmy o współpracy',
     investmentText: 'Projekt, finansowanie, odpowiedzialność i warunki ustalamy w podpisanej umowie.',
     emailLabel: 'E-mail', whatsappLabel: 'WhatsApp',
     companyLabel: 'Polska spółka z ograniczoną odpowiedzialnością', addressCountry: 'Polska',
@@ -132,22 +134,22 @@ const copy = {
 };
 
 copy.de = {
-  prefix: 'de/', name: 'Investoren', title: 'Elektroplanung. Baukompetenz.',
-  description: 'Elektro- und Sanitärplanung, Elektroinstallation, PV-Anlagen, Fassaden und Dächer. Nächste Schritte: Sanierung und Immobilienentwicklung in Belgien.',
-  eyebrow: 'ARCADIAN / FÜR INVESTOREN', hero: 'Elektroplanung.', heroAccent: 'Baukompetenz.',
-  lead: 'Wir planen Elektro- und Sanitäranlagen, installieren Elektro- und PV-Anlagen und realisieren Fassaden, Dächer sowie Sanitärarbeiten mit Nachunternehmern.',
-  services: ['Elektro- und Sanitärplanung', 'Elektroinstallation und PV', 'Komplette Fassaden und Dächer', 'Sanitärarbeiten mit Partnerteams'],
+  prefix: 'de/', name: 'Investoren', title: 'Baukompetenz. Unsere eigene Software.',
+  description: 'Bauarbeiten in Belgien und Werfvolt, unsere selbst entwickelte Software für die eigenen Teams. Lernen Sie Erfahrung, Team und Entwicklungspläne von ARCADIAN kennen.',
+  eyebrow: 'ARCADIAN / FÜR INVESTOREN', hero: 'Baukompetenz.', heroAccent: 'Unsere eigene Software.',
+  lead: 'Wir führen Bauarbeiten in Belgien aus und entwickeln Werfvolt selbst — Software, die aus der täglichen Arbeit unserer eigenen Teams entsteht.',
+  services: ['Fassaden & Dächer', 'Elektro- und Sanitärplanung', 'Elektroinstallation & PV', 'Werfvolt · eigene Software'],
   work: 'Unsere Arbeiten', gallery: 'Ausgeführte Arbeiten stehen in unserer Galerie. Projektzeichnungen folgen.',
-  photoAlt: 'Fassadenmontage aus dem Arbeitsportfolio von Arcadian.', photoCaption: 'Arcadian-Portfolio · Fassadenmontage',
-  contact: 'Gründer kontaktieren', roadmapLink: 'Entwicklungsplan', teamLink: 'Team',
+  contact: 'Partnerschaft besprechen', roadmapLink: 'Entwicklungsplan', teamLink: 'Team',
   teamTitle: 'Aktuelles Ausführungsteam', teamDate: 'Stand: 15. Oktober 2026',
   team: [['2', 'Ingenieure'], ['5', 'Fassadenfachkräfte'], ['4', 'Elektriker'], ['2', 'Dachdecker']],
   teamPartners: 'Sanitärarbeiten · Nachunternehmer',
   roadmapLabel: 'ENTWICKLUNGSPLAN', roadmapTitle: 'Erfahrung. Nächste Schritte.', roadmapNote: 'Geplante Termine. Der Zeitplan kann sich ändern.', nowLabel: 'JETZT',
+  splitLabel: 'Getrennte Wege', forkLabel: 'Trade-Pass geht einen eigenen Weg. Arcadian setzt diesen Entwicklungsplan fort.',
   turnoverTitle: 'Umsatz · EUR', turnoverNote: 'Ungefähre Angaben des Gründers.', turnoverActual: 'Erzielt', turnoverPlanned: 'Geplant',
   history: [
-    ['MÄR 2025 – AUG 2026', 'Mitgründer', 'TRADE-PASS Sp. z o.o.', 'Mitgründung und Aufbau des Unternehmens. Arbeit mit Suren Electro BV. Ausscheiden im August 2026 nach einer Änderung der Eigentümerstruktur.'],
-    ['AUG 2026', 'Gründer', 'ARCADIAN Sp. z o.o.', 'Gründer und Geschäftsführer seit August 2026. Elektroplanung, Installation und Projektabwicklung in Europa.'],
+    ['MÄR 2025 – AUG 2026', 'Bautätigkeit', 'TRADE-PASS Sp. z o.o.', 'Bautätigkeit unter Trade-Pass, einschließlich der Zusammenarbeit mit Suren Electro BV.'],
+    ['AUG 2026', '', '', ''],
   ],
   stages: [
     ['2026 / Q4', 'Aktuell', 'ARCADIAN Sp. z o.o.', 'Aktuelle Zusammenarbeit mit Cleys BV und Radiance Belgium NV.'],
@@ -157,8 +159,8 @@ copy.de = {
     ['2029', 'Geplant', 'Bauen. Verkaufen.', 'Die Immobilie bauen und das fertige Objekt verkaufen.'],
   ],
   founderRole: 'Gründer · Planung und Ausführung',
-  founderBio: 'Ich plane Elektro- und Sanitäranlagen und verantworte die Projektabwicklung. Kontaktieren Sie mich direkt.',
-  investmentLabel: 'ZUSAMMENARBEIT', investmentTitle: 'Interesse an einer Investition?',
+  founderBio: 'Ich plane Elektro- und Sanitäranlagen und verantworte die Projektabwicklung.',
+  investmentLabel: 'ZUSAMMENARBEIT', investmentTitle: 'Ein Gespräch über Partnerschaft',
   investmentText: 'Projekt, Finanzierung, Verantwortlichkeiten und Bedingungen vereinbaren wir in einem unterzeichneten Vertrag.',
   emailLabel: 'E-Mail', whatsappLabel: 'WhatsApp', companyLabel: 'Polnische Gesellschaft mit beschränkter Haftung', addressCountry: 'Polen',
   accountLabel: 'EUR-Konto', beneficiaryLabel: 'Empfänger', accountNote: 'Überweisungen auf Grundlage eines unterzeichneten Vertrags.', skip: 'Zum Inhalt',
@@ -173,25 +175,36 @@ for (const [locale, c] of Object.entries(copy)) {
   let nav = home.match(/<nav\b[^>]*id="site-nav"[\s\S]*?<\/nav>/)[0];
   nav = nav.replace(/<div class="nav-links"[\s\S]*?<\/div>/, `<div class="nav-links" id="nav-links"><a href="#expertise">${esc(c.work)}</a><a href="#team">${esc(c.teamLink)}</a><a href="#roadmap">${esc(c.roadmapLink)}</a><a href="/${c.prefix}investors/" class="active" aria-current="page">${esc(c.name)}</a></div>`);
   nav = nav.replace(/<div class="lang">[\s\S]*?<\/div>/, languageMenu('investors/', locale));
-  nav = nav.replace(/<a class="btn btn-copper btn-sm"[^>]*>[\s\S]*?<\/a>/, `<a class="btn btn-copper btn-sm" href="#partnership">${esc(c.contact)}</a>`);
+  nav = nav.replace(/<a class="btn btn-copper btn-sm"[^>]*>[\s\S]*?<\/a>/, `<a class="btn btn-copper btn-sm inv-enquiry" href="#partnership">${esc(c.contact)}</a>`);
   nav = nav.replace('id="site-nav"', 'id="site-nav" aria-label="ARCADIAN"');
   nav = nav.replace('aria-controls="nav-links"', 'aria-controls="nav-links" aria-expanded="false"');
   let footer = home.match(/<footer\b[\s\S]*?<\/footer>/)[0];
   footer = footer.replaceAll('href="/investors/"', `href="/${c.prefix}investors/"`);
   const path = `/${c.prefix}investors/`;
   const email = 'mailto:info@arcadian-eu.com?subject=' + encodeURIComponent('Arcadian | Investment partnership');
+  const timeline = [...c.history, ...c.stages].map(([date, status, title, text], i) => {
+    const isSplit = roadmapDates[i].startsWith(companySplitMonth);
+    const classes = [i < c.history.length ? 'is-past' : i === c.history.length ? 'is-current' : '', isSplit ? 'is-split' : ''].filter(Boolean).join(' ');
+    const splitMarker = isSplit ? `<div class="inv-split-marker" role="note" aria-label="${esc(c.splitLabel)}: ${esc(date)}"><span class="inv-now-label">${esc(c.splitLabel)}<time datetime="${companySplitMonth}">${esc(date)}</time></span><span class="inv-now-arrow" aria-hidden="true"></span></div>` : '';
+    const splitInline = isSplit ? `<span class="inv-split-inline" aria-hidden="true">${esc(c.splitLabel)} · <time datetime="${companySplitMonth}">${esc(date)}</time></span>` : '';
+    const nowInline = i === c.history.length ? `<span class="inv-now-inline" aria-hidden="true">${esc(c.nowLabel)} · <time datetime="${roadmapAsOf}">15.10.2026</time></span>` : '';
+    const companyFork = isSplit ? `<div class="inv-company-fork" role="img" aria-label="${esc(c.forkLabel)}"><svg class="inv-fork-horizontal" viewBox="0 0 172 90" preserveAspectRatio="none" aria-hidden="true"><path class="inv-fork-main" d="M0 0H142M136 -4L142 0L136 4"/><path class="inv-fork-separate" d="M0 0C0 28 28 46 50 46H142M136 42L142 46L136 50"/></svg><svg class="inv-fork-vertical" viewBox="0 0 240 76" aria-hidden="true"><path class="inv-fork-main" d="M0 -26V68M-4 62L0 68L4 62"/><path class="inv-fork-separate" d="M0 -26C0 -6 20 30 46 30H210M204 26L210 30L204 34"/></svg><span class="inv-path-main" aria-hidden="true">ARCADIAN</span><span class="inv-path-separate" aria-hidden="true">TRADE-PASS</span></div>` : '';
+    const stageCopy = isSplit
+      ? `<div class="inv-stage-copy inv-fork-copy"><span class="inv-stage-date">${esc(date)}</span>${splitInline}${nowInline}${companyFork}</div>`
+      : `<div class="inv-stage-copy"><span class="inv-stage-date">${esc(date)}</span>${nowInline}<span class="inv-status">${esc(status)}</span><h3>${esc(title)}</h3><p>${companyLinks(text)}</p></div>`;
+    return `<li data-roadmap-date="${roadmapDates[i]}"${classes ? ` class="${classes}"` : ''}><span class="inv-wire" aria-hidden="true"></span><span class="inv-milestone" aria-hidden="true"></span>${splitMarker}${stageCopy}</li>`;
+  }).join('');
   const main = `
   <main id="main-content" class="main">
     <header id="expertise" class="inv-hero">
-      <div class="inv-wrap inv-hero-grid">
-        <div><span class="eyebrow">${esc(c.eyebrow)}</span>
+      <div class="inv-wrap">
+        <div class="inv-hero-copy"><span class="eyebrow">${esc(c.eyebrow)}</span>
           <h1>${esc(c.hero)}<br><span>${esc(c.heroAccent)}</span></h1>
           <p class="inv-lead">${esc(c.lead)}</p>
           <ul class="inv-services">${c.services.map(text => `<li>${esc(text)}</li>`).join('')}</ul>
-          <div class="inv-actions"><a class="btn btn-copper" href="#partnership">${esc(c.contact)} <span aria-hidden="true">↗</span></a><a class="inv-text-link" href="#roadmap">${esc(c.roadmapLink)} <span aria-hidden="true">↓</span></a></div>
+          <div class="inv-actions"><a class="btn btn-copper inv-enquiry" href="#partnership">${esc(c.contact)} <span aria-hidden="true">↗</span></a><a class="inv-text-link" href="#roadmap">${esc(c.roadmapLink)} <span aria-hidden="true">↓</span></a></div>
           <p class="inv-gallery-note">${esc(c.gallery)}</p>
         </div>
-        <figure class="inv-hero-media"><img src="/assets/img/investors/arcadian-facade.webp" alt="${esc(c.photoAlt)}" width="1200" height="1600" fetchpriority="high"><figcaption>${esc(c.photoCaption)}</figcaption></figure>
       </div>
       <section id="team" class="inv-team inv-wrap" aria-labelledby="team-title">
         <div class="inv-team-heading"><h2 id="team-title">${esc(c.teamTitle)}</h2><time datetime="2026-10-15">${esc(c.teamDate)}</time></div>
@@ -203,7 +216,7 @@ for (const [locale, c] of Object.entries(copy)) {
       <div class="inv-section-heading"><span class="eyebrow">${esc(c.roadmapLabel)}</span><h2 id="roadmap-title">${esc(c.roadmapTitle)}</h2></div>
       <div class="inv-track-heading"><span>2025 — 2029</span><a href="${corporateLinkedIn}" target="_blank" rel="noopener noreferrer" aria-label="ARCADIAN · LinkedIn">ARCADIAN · LinkedIn <span aria-hidden="true">↗</span></a></div>
       <div class="inv-roadmap-track">
-        <ol class="inv-timeline" aria-label="${esc(c.roadmapTitle)}">${[...c.history, ...c.stages].map(([date, status, title, text], i) => `<li data-roadmap-date="${roadmapDates[i]}"${i < c.history.length ? ' class="is-past"' : i === c.history.length ? ' class="is-current"' : ''}><span class="inv-wire" aria-hidden="true"></span><span class="inv-milestone" aria-hidden="true"></span><div class="inv-stage-copy"><span class="inv-stage-date">${esc(date)}</span>${i === c.history.length ? `<span class="inv-now-inline" aria-hidden="true">${esc(c.nowLabel)} · <time datetime="${roadmapAsOf}">15.10.2026</time></span>` : ''}<span class="inv-status">${esc(status)}</span><h3>${esc(title)}</h3><p>${companyLinks(text)}</p></div></li>`).join('')}</ol>
+        <ol class="inv-timeline" aria-label="${esc(c.roadmapTitle)}">${timeline}</ol>
         <div class="inv-now" role="note" aria-label="${esc(c.nowLabel)}: 15.10.2026" data-now-label="${esc(c.nowLabel)}" hidden><span class="inv-now-label">${esc(c.nowLabel)}<time datetime="${roadmapAsOf}">15.10.2026</time></span><span class="inv-now-arrow" aria-hidden="true"></span></div>
       </div>
       <p class="inv-note">${esc(c.roadmapNote)}</p>
@@ -241,14 +254,14 @@ ${Object.entries(copy).map(([key, value]) => `  <link rel="alternate" hreflang="
   <meta property="og:description" content="${esc(c.description)}">
   <meta property="og:url" content="https://arcadian-eu.com${path}">
   <meta property="og:locale" content="${{en: 'en_GB', nl: 'nl_BE', de: 'de_DE', pl: 'pl_PL'}[locale]}">
-  <meta property="og:image" content="https://arcadian-eu.com/assets/img/investors/arcadian-facade-card.webp">
-  <meta property="og:image:width" content="960">
-  <meta property="og:image:height" content="720">
-  <meta property="og:image:alt" content="${esc(c.photoAlt)}">
+  <meta property="og:image" content="https://arcadian-eu.com/assets/img/about/arcadian-logo.png">
+  <meta property="og:image:width" content="1024">
+  <meta property="og:image:height" content="1024">
+  <meta property="og:image:alt" content="ARCADIAN">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${esc(c.title)} | ARCADIAN">
   <meta name="twitter:description" content="${esc(c.description)}">
-  <meta name="twitter:image" content="https://arcadian-eu.com/assets/img/investors/arcadian-facade-card.webp">
+  <meta name="twitter:image" content="https://arcadian-eu.com/assets/img/about/arcadian-logo.png">
   <link href="/assets/img/icon.svg?v=stars-v2-20260913" rel="icon" type="image/svg+xml">
   <link href="/assets/css/arcadian.css?v=contacts-20261005" rel="stylesheet">
   <link href="/assets/css/legal-footer.css?v=ae92cf41a42ff6243383db607a632ca00095facf" rel="stylesheet">
