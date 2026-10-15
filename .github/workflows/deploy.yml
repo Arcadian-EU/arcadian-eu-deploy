@@ -1,7 +1,7 @@
 name: Checks & Deploy
 
 # Corporate GHE validates main, promotes that exact commit using a repository
-# deploy key, and waits for its served marker. The company-owned mirror deploys
+# GitHub App token, and waits for its served marker. The company-owned mirror deploys
 # App Platform. Pull requests only run checks.
 #
 # One-time setup: add a DigitalOcean API token (Apps read/write) as the
@@ -108,24 +108,25 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Create a token for the publication repository only
+        id: publication-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3
+        with:
+          client-id: ${{ vars.PUBLICATION_APP_CLIENT_ID }}
+          private-key: ${{ secrets.PUBLICATION_APP_PRIVATE_KEY }}
+          owner: Arcadian-EU
+          repositories: arcadian-eu-deploy
+          permission-contents: write
+          permission-workflows: write
+          github-api-url: https://api.github.com
       - name: Publish checked commit and verify its live marker
         env:
-          PUBLICATION_DEPLOY_KEY: ${{ secrets.PUBLICATION_DEPLOY_KEY }}
+          GH_HOST: github.com
+          GH_TOKEN: ${{ steps.publication-token.outputs.token }}
         shell: bash
         run: |
           set -euo pipefail
-          if [ -z "$PUBLICATION_DEPLOY_KEY" ]; then
-            echo '::error::PUBLICATION_DEPLOY_KEY is not configured in corporate GHE.'
-            exit 1
-          fi
-          umask 077
-          key_dir=$(mktemp -d "$RUNNER_TEMP/arcadian-publisher.XXXXXX")
-          trap 'rm -rf "$key_dir"' EXIT
-          printf '%s\n' "$PUBLICATION_DEPLOY_KEY" > "$key_dir/id_ed25519"
-          unset PUBLICATION_DEPLOY_KEY
-          printf -v GIT_SSH_COMMAND 'ssh -i %q -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=%q' \
-            "$key_dir/id_ed25519" "$GITHUB_WORKSPACE/.github/github_known_hosts"
-          export GIT_SSH_COMMAND
+          gh auth setup-git --hostname github.com --force
           python3 .github/scripts/publish_site.py
 
   deploy:

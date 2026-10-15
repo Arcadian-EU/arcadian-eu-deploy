@@ -9,7 +9,7 @@ import time
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 
-MIRROR = "git@github.com:Arcadian-EU/arcadian-eu-deploy.git"
+MIRROR = "https://github.com/Arcadian-EU/arcadian-eu-deploy.git"
 DEPLOYMENT_URL = "https://arcadian-eu.com/deployment.json"
 
 
