@@ -43,7 +43,10 @@
 .portfolio-head{padding-top:52px;padding-bottom:38px}
 .work-card{display:flex;flex-direction:column}
 .work-card .work-body{display:flex;flex-direction:column;align-items:flex-start;flex:1}
-.work-card .work-body h2{font-size:19px}
+.work-card .work-body h2{font-size:19px;margin:0}
+.work-title{font:inherit;color:inherit;text-align:left;background:none;border:0;padding:0;cursor:pointer}
+.work-title:hover{color:var(--copper-deep)}
+.work-title:focus-visible{outline:2px solid var(--copper);outline-offset:4px}
 .work-card .work-description{margin-top:0}
 .work-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;margin-top:auto;padding-top:15px}
 .work-open,.work-download{display:inline-flex;align-items:center;min-height:44px;font:600 12px var(--body);color:var(--copper-deep);background:none;border:0;padding:0;cursor:pointer;text-decoration:none;text-align:left}
