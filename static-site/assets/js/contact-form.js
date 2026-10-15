@@ -9,6 +9,11 @@
   const TURNSTILE_RESPONSE_FIELD = "cf-turnstile-response";
   const TURNSTILE_SITEKEY_PLACEHOLDER = "__TURNSTILE_" + "SITEKEY__";
   const TURNSTILE_LOAD_TIMEOUT_MS = 10000;
+  const translate = value => document.documentElement.lang === 'de' ? ({
+    'The contact form is not configured.': 'Das Kontaktformular ist nicht eingerichtet.',
+    'The message could not be sent. Please check the form and try again.': 'Die Nachricht konnte nicht gesendet werden. Bitte prüfen Sie das Formular und versuchen Sie es erneut.',
+    'The message could not be sent.': 'Die Nachricht konnte nicht gesendet werden.',
+  }[value] || value) : value;
 
   document.querySelectorAll(".arcadian-contact-form").forEach((form) => {
     const startedAt = form.querySelector('input[name="startedAt"]');
@@ -231,7 +236,7 @@
 
   function showError(loading, errorMessage, message) {
     loading.classList.remove("d-block");
-    errorMessage.textContent = message;
+    errorMessage.textContent = translate(message);
     errorMessage.classList.add("d-block");
   }
 

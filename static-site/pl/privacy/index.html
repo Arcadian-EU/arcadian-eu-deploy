@@ -8,6 +8,11 @@
   <meta name="description" content="ARCADIAN privacy and cookie notice for EU users.">
   <meta name="theme-color" content="#0b1020">
   <link rel="canonical" href="https://arcadian-eu.com/privacy/">
+  <link rel="alternate" hreflang="en" href="https://arcadian-eu.com/privacy/">
+  <link rel="alternate" hreflang="nl" href="https://arcadian-eu.com/nl/privacy/">
+  <link rel="alternate" hreflang="de" href="https://arcadian-eu.com/de/privacy/">
+  <link rel="alternate" hreflang="pl" href="https://arcadian-eu.com/pl/privacy/">
+  <link rel="alternate" hreflang="x-default" href="https://arcadian-eu.com/privacy/">
   <!-- Materialize the CSRF token here in <head>, before the body streams past the servlet
        response buffer. Otherwise th:action on the contact form (far down the page) would try to
        create the session after the response is already committed and abort the render. -->
@@ -18,7 +23,7 @@
 
   <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css?v=ae92cf41a42ff6243383db607a632ca00095facf" rel="stylesheet">
 
-  <link href="/assets/css/arcadian.css?v=contacts-20261005" rel="stylesheet">
+  <link href="/assets/css/arcadian.css?v=languages-20261015" rel="stylesheet">
   <link href="/assets/css/legal-footer.css?v=ae92cf41a42ff6243383db607a632ca00095facf" rel="stylesheet">
 </head>
 
@@ -36,12 +41,7 @@
 
     <div class="spacer"></div>
 
-    <div class="lang">
-      <a href="/"
-         aria-label="English">EN</a><a href="/pl/"
-         aria-label="Polski" class="on">PL</a><a href="/nl/"
-         aria-label="Nederlands">NL</a>
-    </div>
+    <div class="lang"><a href="/privacy/" lang="en" aria-label="English">EN</a><a href="/nl/privacy/" lang="nl" aria-label="Nederlands">NL</a><a href="/de/privacy/" lang="de" aria-label="Deutsch">DE</a><a href="/pl/privacy/" lang="pl" aria-label="Polski" class="on" aria-current="page">PL</a></div>
 
     <a class="btn btn-copper btn-sm" href="/pl/#contact">Rozpocznij projekt</a>
 
@@ -217,7 +217,7 @@
     </div>
 
     <div class="ft-bottom">
-      <span>© 2026 ARCADIAN Sp. z o.o. — ul. Ostrobramska 101/4, Warszawa</span>
+      <span>© 2026 ARCADIAN Sp.z.o.o. — ul. Ostrobramska 101/4, Warszawa</span>
       <span class="sep"></span>
       <span class="wv-note">
         <span class="wv-tile"><img src="/assets/img/werfvolt-icon.svg?v=stars-v2-20260913" width="38" height="38" alt=""></span>
@@ -304,7 +304,7 @@
   </a>
 
   <script src="/assets/js/arcadian.js?v=ae92cf41a42ff6243383db607a632ca00095facf"></script>
-  <script src="/assets/js/contact-form.js?v=turnstile-20260824"></script>
+  <script src="/assets/js/contact-form.js?v=languages-20261015"></script>
 
 
   <script src="/assets/js/cookie-preferences.js?v=ae92cf41a42ff6243383db607a632ca00095facf"></script>

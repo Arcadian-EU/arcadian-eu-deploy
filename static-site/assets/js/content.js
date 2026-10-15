@@ -2,20 +2,22 @@
   'use strict';
   const root = document.querySelector('[data-content-page]');
   if (!root) return;
-  const locale = ['en', 'pl', 'nl'].includes(document.documentElement.lang) ? document.documentElement.lang : 'en';
+  const locale = ['en', 'nl', 'de', 'pl'].includes(document.documentElement.lang) ? document.documentElement.lang : 'en';
   const messages = {
     en: {all: 'All work', finishing: 'Finishing & renovation', facades: 'Facades', electrical: 'Electrical', loading: 'Loading…', unavailable: 'The portfolio is temporarily unavailable. Please contact us for project references.', empty: 'Project photographs will appear here after publication.', emptyRates: 'Contact us for current opportunities and cooperation terms.', more: 'Show more', photos: 'View photographs', close: 'Close', previous: 'Previous photograph', next: 'Next photograph', of: 'of', employee: 'Employee', independent: 'Independent specialist', crew: 'Independent crew', ownVehicle: 'Own vehicle', ownTools: 'Own tools', payroll_gross: 'Salary before deductions', invoice_ex_vat: 'Invoice, excluding VAT', hour_person: 'hour / person', day_person: 'day / person', hour_crew: 'hour / crew', m2: 'm²', m: 'metre', unit: 'unit', fixed: 'agreed scope', from: 'from'},
     pl: {all: 'Wszystkie prace', finishing: 'Wykończenia i renowacje', facades: 'Elewacje', electrical: 'Elektryka', loading: 'Ładowanie…', unavailable: 'Portfolio jest chwilowo niedostępne. Skontaktuj się z nami w sprawie realizacji.', empty: 'Zdjęcia realizacji pojawią się tutaj po publikacji.', emptyRates: 'Skontaktuj się z nami, aby poznać aktualne możliwości i warunki współpracy.', more: 'Pokaż więcej', photos: 'Zobacz zdjęcia', close: 'Zamknij', previous: 'Poprzednie zdjęcie', next: 'Następne zdjęcie', of: 'z', employee: 'Pracownik etatowy', independent: 'Samodzielny specjalista', crew: 'Samodzielna brygada', ownVehicle: 'Własny samochód', ownTools: 'Własne narzędzia', payroll_gross: 'Wynagrodzenie brutto', invoice_ex_vat: 'Faktura, bez VAT', hour_person: 'godzina / osoba', day_person: 'dzień / osoba', hour_crew: 'godzina / brygada', m2: 'm²', m: 'metr', unit: 'jednostka', fixed: 'uzgodniony zakres', from: 'od'},
     nl: {all: 'Alle werken', finishing: 'Afwerking & renovatie', facades: 'Gevels', electrical: 'Elektriciteit', loading: 'Laden…', unavailable: 'Het portfolio is tijdelijk niet beschikbaar. Neem contact op voor projectreferenties.', empty: 'Projectfoto’s verschijnen hier na publicatie.', emptyRates: 'Neem contact op voor actuele mogelijkheden en samenwerkingsvoorwaarden.', more: 'Meer tonen', photos: 'Foto’s bekijken', close: 'Sluiten', previous: 'Vorige foto', next: 'Volgende foto', of: 'van', employee: 'Werknemer', independent: 'Zelfstandig specialist', crew: 'Zelfstandige ploeg', ownVehicle: 'Eigen voertuig', ownTools: 'Eigen gereedschap', payroll_gross: 'Brutoloon', invoice_ex_vat: 'Factuur, exclusief btw', hour_person: 'uur / persoon', day_person: 'dag / persoon', hour_crew: 'uur / ploeg', m2: 'm²', m: 'meter', unit: 'eenheid', fixed: 'afgesproken omvang', from: 'vanaf'},
   };
+  messages.de = {all: 'Alle Arbeiten', finishing: 'Ausbau und Sanierung', facades: 'Fassaden', electrical: 'Elektrotechnik', loading: 'Wird geladen…', unavailable: 'Das Portfolio ist vorübergehend nicht verfügbar. Bitte kontaktieren Sie uns für Projektreferenzen.', empty: 'Projektfotos erscheinen hier nach ihrer Veröffentlichung.', emptyRates: 'Kontaktieren Sie uns zu aktuellen Möglichkeiten und Bedingungen der Zusammenarbeit.', more: 'Mehr anzeigen', photos: 'Fotos ansehen', close: 'Schließen', previous: 'Vorheriges Foto', next: 'Nächstes Foto', of: 'von', employee: 'Mitarbeiter', independent: 'Selbstständige Fachkraft', crew: 'Selbstständiges Team', ownVehicle: 'Eigenes Fahrzeug', ownTools: 'Eigenes Werkzeug', payroll_gross: 'Bruttogehalt', invoice_ex_vat: 'Rechnung ohne Umsatzsteuer', hour_person: 'Stunde / Person', day_person: 'Tag / Person', hour_crew: 'Stunde / Team', m2: 'm²', m: 'Meter', unit: 'Einheit', fixed: 'vereinbarter Umfang', from: 'ab'};
   const t = messages[locale];
   Object.assign(t, {
     en: {subcontractors: 'Subcontractor crews', viewPDF: 'View PDF', downloadPDF: 'Download PDF', pages: 'pages', effective: 'Effective from', documentsUnavailable: 'Rate documents are temporarily unavailable. Please contact Arcadian.'},
     pl: {subcontractors: 'Brygady podwykonawcze', viewPDF: 'Przeglądaj PDF', downloadPDF: 'Pobierz PDF', pages: 'str.', effective: 'Obowiązuje od', documentsUnavailable: 'Dokumenty z cennikami są chwilowo niedostępne. Skontaktuj się z Arcadian.'},
     nl: {subcontractors: 'Onderaannemersploegen', viewPDF: 'Bekijk PDF', downloadPDF: 'Download PDF', pages: 'pagina’s', effective: 'Geldig vanaf', documentsUnavailable: 'Tariefdocumenten zijn tijdelijk niet beschikbaar. Neem contact op met Arcadian.'},
+    de: {subcontractors: 'Nachunternehmerteams', viewPDF: 'PDF ansehen', downloadPDF: 'PDF herunterladen', pages: 'Seiten', effective: 'Gültig ab', documentsUnavailable: 'Die Preisblätter sind vorübergehend nicht verfügbar. Bitte kontaktieren Sie Arcadian.'},
   }[locale]);
   const plural = new Intl.PluralRules(locale);
-  const photoWords = {en: {one: 'photo', other: 'photos'}, pl: {one: 'zdjęcie', few: 'zdjęcia', many: 'zdjęć', other: 'zdjęcia'}, nl: {one: 'foto', other: 'foto’s'}}[locale];
+  const photoWords = {en: {one: 'photo', other: 'photos'}, nl: {one: 'foto', other: 'foto’s'}, de: {one: 'Foto', other: 'Fotos'}, pl: {one: 'zdjęcie', few: 'zdjęcia', many: 'zdjęć', other: 'zdjęcia'}}[locale];
   const status = root.querySelector('[data-content-status]');
   const list = root.querySelector('[data-content-list]');
   const more = root.querySelector('[data-content-more]');
@@ -31,7 +33,54 @@
     status.textContent = isRate ? t.emptyRates : t.empty;
     return;
   }
-  const text = (row, field) => String((locale !== 'en' && row[`${field}_${locale}`]) || row[field] || '');
+  // Exact-source fallbacks for the current published portfolio; edited/new CMS copy stays intact.
+  const germanPortfolio = {
+    'Electrical distribution & cable management': 'Elektroverteilung und Kabelführung',
+    'Distribution-cabinet wiring, terminal connections and cable containment. Overall views followed by installation details.': 'Verdrahtung von Verteilerschränken, Klemmenanschlüsse und Kabelführung. Gesamtansichten und anschließende Montagedetails.',
+    'Commercial facade installation': 'Fassadenmontage an einem Gewerbegebäude',
+    'External timber facade structure on a commercial building. Building views and installation work at height.': 'Äußere Holzfassadenkonstruktion an einem Gewerbegebäude. Gebäudeansichten und Montagearbeiten in der Höhe.',
+    'Commercial lighting & cable routes': 'Beleuchtung und Kabeltrassen in Gewerberäumen',
+    'Linear lighting, overhead cable containment and service routes in commercial interiors. Views from installation stages.': 'Lineare Beleuchtung, abgehängte Kabeltrassen und Leitungswege in Gewerberäumen. Einblicke in die Montagephasen.',
+    'Residential distribution board': 'Elektroverteiler im Wohngebäude',
+    'Circuit protection, control modules and structured internal wiring. Assembly and installation views.': 'Stromkreisabsicherung, Steuermodule und strukturierte interne Verdrahtung. Ansichten von Aufbau und Installation.',
+    'Electrical metering room': 'Elektrozählerraum',
+    'Grouped electricity meters, incoming cables and cable trays in a technical room. Overall and connection views.': 'Gruppierte Stromzähler, Zuleitungen und Kabeltrassen in einem Technikraum. Gesamtansichten und Anschlussdetails.',
+    'Underground cable infrastructure': 'Unterirdische Kabelinfrastruktur',
+    'Cable ducts and service routes on a commercial construction site. Installation views before backfilling.': 'Kabelschutzrohre und Leitungswege auf einer Gewerbebaustelle. Montageansichten vor dem Verfüllen.',
+    'Light brick facade': 'Helle Ziegelfassade',
+    'Light brick masonry, full-height glazing and the junction beneath a concrete canopy.': 'Helles Ziegelmauerwerk, raumhohe Verglasung und Anschluss unter einem Betonvordach.',
+    'Terrace waterproofing': 'Terrassenabdichtung',
+    'Terrace membrane, wall upstands and corner junctions during installation. General view and construction details.': 'Abdichtungsbahn, Wandanschlüsse und Eckanschlüsse einer Terrasse während der Ausführung. Gesamtansicht und Konstruktionsdetails.',
+    'Assembled distribution board with circuit protection and control modules.': 'Montierter Verteiler mit Stromkreisabsicherung und Steuermodulen.',
+    'Cable entry and containment above the electrical equipment.': 'Kabeleinführung und Kabelführung über der elektrischen Ausrüstung.',
+    'Cable-duct installation along the site service route.': 'Verlegung von Kabelschutzrohren entlang der Leitungstrasse auf der Baustelle.',
+    'Close-up of the wall junction.': 'Detailansicht des Wandanschlusses.',
+    'Commercial building with the external timber facade structure during construction.': 'Gewerbegebäude mit äußerer Holzfassadenkonstruktion während der Bauarbeiten.',
+    'Corner and parapet junction.': 'Eck- und Attikaanschluss.',
+    'Distribution cabinet: organised conductor routing and terminal connections.': 'Verteilerschrank: geordnete Leiterführung und Klemmenanschlüsse.',
+    'Distribution-board installation and internal wiring.': 'Montage und interne Verdrahtung eines Elektroverteilers.',
+    'Electrical equipment and vertical cable routes in the technical room.': 'Elektrische Ausrüstung und vertikale Kabeltrassen im Technikraum.',
+    'Facade and full-height glazing.': 'Fassade und raumhohe Verglasung.',
+    'Facade installation using an elevating work platform.': 'Fassadenmontage mit einer Hubarbeitsbühne.',
+    'General view of the side facade.': 'Gesamtansicht der Seitenfassade.',
+    'Glazing beneath the concrete canopy.': 'Verglasung unter dem Betonvordach.',
+    'Grouped electricity meters and vertical cable routes.': 'Gruppierte Stromzähler und vertikale Kabeltrassen.',
+    'Installation detail at the external timber structure.': 'Montagedetail an der äußeren Holzkonstruktion.',
+    'Internal cable management and connection detail.': 'Interne Kabelführung und Anschlussdetail.',
+    'Lighting and service routes around the structural columns.': 'Beleuchtung und Leitungswege um die Tragstützen.',
+    'Lighting and service-route detail beside the window.': 'Detail von Beleuchtung und Leitungsweg neben dem Fenster.',
+    'Linear lighting and overhead services: general interior view.': 'Lineare Beleuchtung und Deckeninstallationen: Gesamtansicht des Innenraums.',
+    'Linear luminaires and overhead cable containment.': 'Lineare Leuchten und abgehängte Kabelführung.',
+    'Masonry junction beneath the canopy.': 'Mauerwerksanschluss unter dem Vordach.',
+    'Membrane at the end wall.': 'Abdichtungsbahn an der Abschlusswand.',
+    'Overall view of the building and the construction site.': 'Gesamtansicht von Gebäude und Baustelle.',
+    'Overall view of the metering installation and cable containment.': 'Gesamtansicht der Zähleranlage und Kabelführung.',
+    'Overall view of the open distribution cabinet.': 'Gesamtansicht des geöffneten Verteilerschranks.',
+    'Terminal blocks and conductor routing inside the cabinet.': 'Klemmenblöcke und Leiterführung im Schrank.',
+    'Underground service routes during installation.': 'Unterirdische Leitungswege während der Verlegung.',
+  };
+  const translatePortfolio = value => locale === 'de' ? germanPortfolio[value] || value : value;
+  const text = (row, field) => String((locale !== 'en' && row[`${field}_${locale}`]) || translatePortfolio(row[field]) || '');
   const element = (tag, className, value) => {
     const item = document.createElement(tag);
     if (className) item.className = className;
@@ -41,8 +90,8 @@
   if (isDocument) {
     list.classList.add('document-grid');
     const intro = element('div', 'documents-intro');
-    intro.lang = 'en';
-    intro.append(element('h2', '', 'Current rate sheets'), element('p', '', 'English is the main version. Translations are available as separate attachments.'));
+    intro.lang = locale === 'de' ? 'de' : 'en';
+    intro.append(element('h2', '', locale === 'de' ? 'Aktuelle Preisblätter' : 'Current rate sheets'), element('p', '', locale === 'de' ? 'Die Hauptfassung ist auf Englisch. Übersetzungen sind als separate Anlagen verfügbar.' : 'English is the main version. Translations are available as separate attachments.'));
     status.before(intro);
   }
   const fileId = (id) => typeof id === 'string' && /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(id);
@@ -64,7 +113,7 @@
       image.src = asset(photographs[0].id, 'card');
       image.srcset = `${asset(photographs[0].id, 'small')} 480w, ${asset(photographs[0].id, 'card')} 960w`;
       image.sizes = '(max-width: 620px) 100vw, (max-width: 960px) 50vw, 33vw';
-      image.alt = photographs[0].description || text(project, 'title');
+      image.alt = translatePortfolio(photographs[0].description) || text(project, 'title');
       image.width = 960; image.height = 720;
       image.loading = 'lazy'; image.decoding = 'async';
       open.append(image, element('span', 'work-count', `${photographs.length} ${photoWords[plural.select(photographs.length)] || photoWords.other}`));
@@ -91,8 +140,8 @@
     let selected = 0;
     function show() {
       image.src = asset(photographs[selected].id, 'large');
-      image.alt = photographs[selected].description || text(project, 'title');
-      caption.textContent = photographs[selected].description || text(project, 'title');
+      image.alt = translatePortfolio(photographs[selected].description) || text(project, 'title');
+      caption.textContent = translatePortfolio(photographs[selected].description) || text(project, 'title');
       position.textContent = `${selected + 1} ${t.of} ${photographs.length}`;
       previous.disabled = selected === 0;
       next.disabled = selected === photographs.length - 1;
@@ -128,24 +177,25 @@
   function documentCard(row) {
     if (!fileId(row.id)) throw new Error('Invalid document identifier.');
     const card = element('article', 'document-card');
-    card.lang = 'en';
+    card.lang = locale === 'de' ? 'de' : 'en';
     const main = element('div', 'document-main');
     const kicker = element('div', 'document-kicker');
-    kicker.append(element('span', 'eyebrow', row.category === 'subcontractors' ? 'For independent contractors' : 'For workers'), element('span', 'primary-language', 'English'));
+    kicker.append(element('span', 'eyebrow', row.category === 'subcontractors' ? (locale === 'de' ? 'Für selbstständige Auftragnehmer' : 'For independent contractors') : (locale === 'de' ? 'Für Mitarbeitende' : 'For workers')), element('span', 'primary-language', locale === 'de' ? 'Englisch' : 'English'));
     const heading = element('h2');
     const titleButton = element('button', 'document-title-button', row.title || 'Rate sheet');
+    titleButton.lang = 'en';
     titleButton.type = 'button';
     titleButton.setAttribute('aria-haspopup', 'dialog');
     heading.append(titleButton);
     heading.id = 'document-title-' + row.id;
     card.setAttribute('aria-labelledby', heading.id);
     main.append(kicker, heading);
-    if (row.description) main.append(element('p', 'work-description', row.description));
+    if (row.description) { const description = element('p', 'work-description', row.description); description.lang = 'en'; main.append(description); }
     const metadata = file => {
-      let value = `${Number(file.page_count)} pages · ${new Intl.NumberFormat('en', {maximumFractionDigits: 0}).format(Math.ceil(Number(file.file_bytes) / 1024))} KB`;
+      let value = `${Number(file.page_count)} ${locale === 'de' ? 'Seiten' : 'pages'} · ${new Intl.NumberFormat(locale === 'de' ? 'de' : 'en', {maximumFractionDigits: 0}).format(Math.ceil(Number(file.file_bytes) / 1024))} KB`;
       if (/^\d{4}-\d{2}-\d{2}$/.test(row.effective_date || '')) {
         const date = new Date(`${row.effective_date}T12:00:00Z`);
-        if (!Number.isNaN(date.getTime())) value += ` · ${new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long', year: 'numeric'}).format(date)}`;
+        if (!Number.isNaN(date.getTime())) value += ` · ${new Intl.DateTimeFormat(locale === 'de' ? 'de-DE' : 'en-GB', {day: 'numeric', month: 'long', year: 'numeric'}).format(date)}`;
       }
       return value;
     };
@@ -154,26 +204,26 @@
     const icon = element('i', 'bi bi-file-earmark-text');
     icon.setAttribute('aria-hidden', 'true');
     const fileInfo = element('div');
-    fileInfo.append(element('strong', '', 'English rate sheet'), element('span', 'document-meta', meta));
+    fileInfo.append(element('strong', '', locale === 'de' ? 'Englisches Preisblatt' : 'English rate sheet'), element('span', 'document-meta', meta));
     file.append(icon, fileInfo); main.append(file);
     const actions = element('div', 'document-actions');
     const documentURL = new URL(`api/documents/${row.id}/`, cms.href.replace(/\/?$/, '/')).href;
-    const view = element('button', 'btn btn-copper', 'View English PDF');
+    const view = element('button', 'btn btn-copper', locale === 'de' ? 'Englisches PDF ansehen' : 'View English PDF');
     view.type = 'button';
     view.setAttribute('aria-haspopup', 'dialog');
-    const openPreview = event => window.ARCADIAN_PDF_PREVIEW.open({url: documentURL, title: row.title || 'Rate sheet', meta}, event.currentTarget);
+    const openPreview = event => window.ARCADIAN_PDF_PREVIEW.open({url: documentURL, title: row.title || 'Rate sheet', meta, language: 'en'}, event.currentTarget);
     view.addEventListener('click', openPreview);
     titleButton.addEventListener('click', openPreview);
-    const download = element('a', 'btn btn-outline', 'Download');
+    const download = element('a', 'btn btn-outline', locale === 'de' ? 'Herunterladen' : 'Download');
     download.href = `${documentURL}?download=1`;
     actions.append(view, download); main.append(actions); card.append(main);
-    const languages = {nl: 'Nederlands', pl: 'Polski', ru: 'Русский'};
+    const languages = {nl: 'Nederlands', de: 'Deutsch', pl: 'Polski', ru: 'Русский'};
     const translations = Object.keys(languages).flatMap(language => Array.isArray(row.translations) ? row.translations.filter(item => item.language === language) : []);
     if (translations.length) {
       card.classList.add('has-translations');
       const sidebar = element('aside', 'document-languages');
-      sidebar.setAttribute('aria-label', `${row.title || 'Rate sheet'}: additional languages`);
-      sidebar.append(element('h3', '', 'Other languages'), element('p', '', 'Translated PDF attachments'));
+      sidebar.setAttribute('aria-label', `${row.title || 'Rate sheet'}: ${locale === 'de' ? 'weitere Sprachen' : 'additional languages'}`);
+      sidebar.append(element('h3', '', locale === 'de' ? 'Weitere Sprachen' : 'Other languages'), element('p', '', locale === 'de' ? 'Übersetzte PDF-Anlagen' : 'Translated PDF attachments'));
       const files = element('div', 'translation-files');
       for (const item of translations) {
         const attachment = element('div', 'translation-file');
@@ -183,19 +233,19 @@
         const preview = element('button', 'translation-preview');
         preview.type = 'button';
         preview.setAttribute('aria-haspopup', 'dialog');
-        preview.setAttribute('aria-label', `View PDF: ${languages[item.language]}`);
-        preview.addEventListener('click', event => window.ARCADIAN_PDF_PREVIEW.open({url: previewURL, title: `${row.title || 'Rate sheet'} — ${languages[item.language]}`, meta: metadata(item)}, event.currentTarget));
+        preview.setAttribute('aria-label', `${locale === 'de' ? 'PDF ansehen' : 'View PDF'}: ${languages[item.language]}`);
+        preview.addEventListener('click', event => window.ARCADIAN_PDF_PREVIEW.open({url: previewURL, title: `${row.title || 'Rate sheet'} — ${languages[item.language]}`, meta: metadata(item), language: item.language}, event.currentTarget));
         const symbol = element('i', 'bi bi-file-earmark-text'); symbol.setAttribute('aria-hidden', 'true');
         const label = element('span', '', languages[item.language]);
         label.lang = item.language;
-        const details = element('small', '', `PDF · ${Number(item.page_count)} pages`); details.lang = 'en';
+        const details = element('small', '', `PDF · ${Number(item.page_count)} ${locale === 'de' ? 'Seiten' : 'pages'}`); details.lang = locale === 'de' ? 'de' : 'en';
         label.append(details);
         preview.append(symbol, label);
         const download = element('a', 'translation-download file-arrow', '↓');
         translationURL.searchParams.set('download', '1');
         download.href = translationURL.href;
-        download.setAttribute('aria-label', `Download ${languages[item.language]} PDF`);
-        download.title = `Download ${languages[item.language]} PDF`;
+        download.setAttribute('aria-label', locale === 'de' ? `PDF herunterladen: ${languages[item.language]}` : `Download ${languages[item.language]} PDF`);
+        download.title = locale === 'de' ? `PDF herunterladen: ${languages[item.language]}` : `Download ${languages[item.language]} PDF`;
         attachment.append(preview, download); files.append(attachment);
       }
       sidebar.append(files); card.append(sidebar);

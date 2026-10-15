@@ -1,11 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://arcadian-eu.com/</loc><lastmod>2026-07-05</lastmod></url>
-  <url><loc>https://arcadian-eu.com/nl/</loc><lastmod>2026-07-05</lastmod></url>
-  <url><loc>https://arcadian-eu.com/pl/</loc><lastmod>2026-07-05</lastmod></url>
+  <url><loc>https://arcadian-eu.com/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/nl/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/de/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/pl/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/electrical/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/nl/electrical/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/de/electrical/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/pl/electrical/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/gallery/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/nl/gallery/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/de/gallery/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/pl/gallery/</loc><lastmod>2026-10-15</lastmod></url>
   <url><loc>https://arcadian-eu.com/investors/</loc><lastmod>2026-10-15</lastmod></url>
   <url><loc>https://arcadian-eu.com/nl/investors/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/de/investors/</loc><lastmod>2026-10-15</lastmod></url>
   <url><loc>https://arcadian-eu.com/pl/investors/</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://arcadian-eu.com/privacy/</loc><lastmod>2026-07-05</lastmod></url>
-  <url><loc>https://arcadian-eu.com/terms/</loc><lastmod>2026-07-05</lastmod></url>
+  <url><loc>https://arcadian-eu.com/privacy/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/nl/privacy/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/de/privacy/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/pl/privacy/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/rates/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/nl/rates/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/de/rates/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/pl/rates/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/rates/electrical/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/nl/rates/electrical/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/de/rates/electrical/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/pl/rates/electrical/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/rates/facades/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/nl/rates/facades/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/de/rates/facades/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/pl/rates/facades/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/rates/finishing/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/nl/rates/finishing/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/de/rates/finishing/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/pl/rates/finishing/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/subcontractors/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/nl/subcontractors/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/de/subcontractors/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/pl/subcontractors/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/terms/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/nl/terms/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/de/terms/</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://arcadian-eu.com/pl/terms/</loc><lastmod>2026-10-15</lastmod></url>
 </urlset>

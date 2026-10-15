@@ -27,7 +27,7 @@
   const dayFormatter = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Europe/Brussels', year: 'numeric', month: '2-digit', day: '2-digit',
   });
-  const locale = {en: 'en-GB', nl: 'nl-BE', pl: 'pl-PL'}[document.documentElement.lang] || 'en-GB';
+  const locale = {en: 'en-GB', nl: 'nl-BE', de: 'de-DE', pl: 'pl-PL'}[document.documentElement.lang] || 'en-GB';
   const labelFormatter = new Intl.DateTimeFormat(locale, {
     timeZone: 'UTC', year: 'numeric', month: 'short', day: '2-digit',
   });

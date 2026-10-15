@@ -9,6 +9,7 @@ const labels = {
   en: {email: 'Projects, subcontracting and careers', main: 'Main contact', poland: 'Corporate number · Poland', hours: 'Mon–Fri, 08:00–18:00 CET', whatsapp: 'Open WhatsApp chat', sent: 'Your request has reached the ARCADIAN office. Our team will contact you shortly from'},
   pl: {email: 'Projekty, podwykonawstwo i praca', main: 'Główny kontakt', poland: 'Numer firmowy · Polska', hours: 'Pn–Pt, 08:00–18:00 CET', whatsapp: 'Otwórz czat WhatsApp', sent: 'Wiadomość dotarła do biura ARCADIAN. Nasz zespół skontaktuje się wkrótce z numeru'},
   nl: {email: 'Projecten, onderaanneming en vacatures', main: 'Hoofdcontact', poland: 'Bedrijfsnummer · Polen', hours: 'Ma–Vr, 08:00–18:00 CET', whatsapp: 'Open WhatsApp-chat', sent: 'Je bericht is aangekomen bij ARCADIAN. Ons team neemt binnenkort contact op via'},
+  de: {email: 'Projekte, Nachunternehmer und Stellen', main: 'Hauptkontakt', poland: 'Firmennummer · Polen', hours: 'Mo–Fr, 08:00–18:00 MEZ', whatsapp: 'WhatsApp-Chat öffnen', sent: 'Ihre Anfrage ist im ARCADIAN-Büro eingegangen. Unser Team meldet sich in Kürze unter'},
 };
 
 const whatsapp = (contact, label) => `<a class="contact-channel" href="${contact.whatsapp}" target="_blank" rel="noopener noreferrer" aria-label="${label}: ${contact.display}" title="WhatsApp · ${contact.display}"><i class="bi bi-whatsapp" aria-hidden="true"></i></a>`;

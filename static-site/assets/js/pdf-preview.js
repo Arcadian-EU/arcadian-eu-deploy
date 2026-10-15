@@ -1,6 +1,9 @@
 (() => {
   'use strict';
 
+  const german = document.documentElement.lang === 'de';
+  const translate = value => german ? ({'Fit width': 'An Breite anpassen', 'Loading PDF…': 'PDF wird geladen…', 'Loading page…': 'Seite wird geladen…', 'The PDF could not be loaded. Retry or download a copy.': 'Das PDF konnte nicht geladen werden. Versuchen Sie es erneut oder laden Sie eine Kopie herunter.', 'This page could not be displayed. Retry or download a copy.': 'Diese Seite konnte nicht angezeigt werden. Versuchen Sie es erneut oder laden Sie eine Kopie herunter.'}[value] || value) : value;
+
   const vendor = new URL('../vendor/pdfjs/', document.currentScript.src);
   let rendererPromise;
   let ui;
@@ -23,12 +26,12 @@
     ui.previous.disabled = !pdf || page === 1;
     ui.next.disabled = !pdf || page === pdf.numPages;
     ui.zoom.disabled = !pdf;
-    ui.zoom.textContent = zoom === 100 ? 'Fit width' : '125%';
+    ui.zoom.textContent = zoom === 100 ? translate('Fit width') : '125%';
     ui.zoom.setAttribute('aria-pressed', String(zoom === 125));
   }
 
   function status(message, retry = false) {
-    ui.status.textContent = message;
+    ui.status.textContent = translate(message);
     ui.status.hidden = !message;
     ui.retry.hidden = !retry;
   }
@@ -72,10 +75,20 @@
     if (ui) return;
     const dialog = document.createElement('dialog');
     dialog.className = 'pdf-dialog';
-    dialog.lang = 'en';
+    dialog.lang = german ? 'de' : 'en';
     dialog.setAttribute('aria-labelledby', 'pdf-preview-title');
     dialog.innerHTML = '<div class="pdf-viewer-bar"><div class="pdf-viewer-heading"><strong id="pdf-preview-title"></strong><span class="pdf-viewer-meta"></span></div><div class="pdf-viewer-actions"><a class="pdf-tool pdf-download">Download PDF</a><button type="button" class="pdf-tool pdf-close" autofocus aria-label="Close PDF preview"><span class="pdf-close-label">Close</span><span aria-hidden="true">×</span></button></div></div><div class="pdf-reader-controls"><button type="button" class="pdf-tool pdf-previous" aria-label="Previous page">←</button><span class="pdf-position" role="status" aria-live="polite"></span><button type="button" class="pdf-tool pdf-next" aria-label="Next page">→</button><span class="pdf-controls-spacer"></span><button type="button" class="pdf-tool pdf-zoom" aria-label="Toggle zoom between fit width and 125 percent" aria-pressed="false">Fit width</button></div><div class="pdf-paper-stage" tabindex="0" aria-label="PDF pages"><div class="pdf-viewer-notice"><p class="pdf-status" role="status" aria-live="polite"></p><button type="button" class="pdf-tool pdf-retry" hidden>Retry</button></div><div class="pdf-paper" aria-busy="true"></div></div>';
     document.body.append(dialog);
+    if (german) {
+      dialog.querySelector('.pdf-download').textContent = 'PDF herunterladen';
+      dialog.querySelector('.pdf-close-label').textContent = 'Schließen';
+      dialog.querySelector('.pdf-close').setAttribute('aria-label', 'PDF-Vorschau schließen');
+      dialog.querySelector('.pdf-previous').setAttribute('aria-label', 'Vorherige Seite');
+      dialog.querySelector('.pdf-next').setAttribute('aria-label', 'Nächste Seite');
+      dialog.querySelector('.pdf-zoom').setAttribute('aria-label', 'Zwischen Seitenbreite und 125 Prozent umschalten');
+      dialog.querySelector('.pdf-paper-stage').setAttribute('aria-label', 'PDF-Seiten');
+      dialog.querySelector('.pdf-retry').textContent = 'Erneut versuchen';
+    }
     const find = selector => dialog.querySelector(selector);
     ui = {dialog, title: find('#pdf-preview-title'), meta: find('.pdf-viewer-meta'), download: find('.pdf-download'), close: find('.pdf-close'), previous: find('.pdf-previous'), next: find('.pdf-next'), position: find('.pdf-position'), zoom: find('.pdf-zoom'), stage: find('.pdf-paper-stage'), paper: find('.pdf-paper'), status: find('.pdf-status'), retry: find('.pdf-retry')};
     ui.close.addEventListener('click', close);
@@ -181,6 +194,7 @@
       canvas.setAttribute('aria-hidden', 'true');
       const text = document.createElement('div');
       text.className = 'pdf-text-layer';
+      text.lang = source.language || 'en';
       text.style.setProperty('--total-scale-factor', viewport.scale);
       ui.paper.style.width = `${viewport.width}px`;
       ui.paper.style.height = `${viewport.height}px`;

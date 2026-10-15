@@ -17,7 +17,7 @@ createServer(async (req, res) => {
     }
     if (path === '/admin/' || path === '/admin') {res.writeHead(302, {Location: `${cms}/admin/`}); return res.end();}
     let file = resolve(root, `.${path}`);
-    if (!file.startsWith(root + sep) || path.includes('/.')) throw new Error('Invalid path');
+    if ((file !== root && !file.startsWith(root + sep)) || path.includes('/.')) throw new Error('Invalid path');
     if ((await stat(file)).isDirectory()) file = resolve(file, 'index.html');
     const body = await readFile(file);
     res.writeHead(200, {'Content-Type': types[extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-store'});

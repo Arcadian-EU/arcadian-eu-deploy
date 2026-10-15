@@ -10,6 +10,7 @@
   <link rel="canonical" href="https://arcadian-eu.com/pl/gallery/">
   <link rel="alternate" hreflang="en" href="https://arcadian-eu.com/gallery/">
   <link rel="alternate" hreflang="nl" href="https://arcadian-eu.com/nl/gallery/">
+  <link rel="alternate" hreflang="de" href="https://arcadian-eu.com/de/gallery/">
   <link rel="alternate" hreflang="pl" href="https://arcadian-eu.com/pl/gallery/">
   <link rel="alternate" hreflang="x-default" href="https://arcadian-eu.com/gallery/">
   <meta property="og:type" content="website">
@@ -25,7 +26,7 @@
   <meta name="twitter:title" content="Nasze realizacje — ARCADIAN">
   <meta name="twitter:description" content="Instalacje elektryczne, elewacje i detale renowacji. Wybrane zdjęcia naszych prac oraz etapów montażu.">
   <meta name="twitter:image" content="https://arcadian-eu.com/assets/img/og-cover.jpg">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"ARCADIAN","legalName":"ARCADIAN Sp. z o.o.","url":"https://arcadian-eu.com/","logo":"https://arcadian-eu.com/assets/img/about/arcadian-logo.png","email":"info@arcadian-eu.com","vatID":"PL1133202795","address":{"@type":"PostalAddress","streetAddress":"ul. Ostrobramska 101/4","addressLocality":"Warsaw","addressCountry":"PL"},"brand":{"@type":"Brand","name":"Werfvolt"},"telephone":"+32466495409","contactPoint":[{"@type":"ContactPoint","telephone":"+48734472003","contactType":"Corporate office in Poland"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"ARCADIAN","legalName":"ARCADIAN Sp.z.o.o.","url":"https://arcadian-eu.com/","logo":"https://arcadian-eu.com/assets/img/about/arcadian-logo.png","email":"info@arcadian-eu.com","vatID":"PL1133202795","address":{"@type":"PostalAddress","streetAddress":"ul. Ostrobramska 101/4","addressLocality":"Warsaw","addressCountry":"PL"},"brand":{"@type":"Brand","name":"Werfvolt"},"telephone":"+32466495409","contactPoint":[{"@type":"ContactPoint","telephone":"+48734472003","contactType":"Corporate office in Poland"}]}</script>
   <!-- Materialize the CSRF token here in <head>, before the body streams past the servlet
        response buffer. Otherwise th:action on the contact form (far down the page) would try to
        create the session after the response is already committed and abort the render. -->
@@ -36,9 +37,9 @@
 
   <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css?v=ae92cf41a42ff6243383db607a632ca00095facf" rel="stylesheet">
 
-  <link href="/assets/css/arcadian.css?v=contacts-20261005" rel="stylesheet">
+  <link href="/assets/css/arcadian.css?v=languages-20261015" rel="stylesheet">
   <link href="/assets/css/legal-footer.css?v=ae92cf41a42ff6243383db607a632ca00095facf" rel="stylesheet">
-  <link href="/assets/css/content.css?v=translation-preview-20261007" rel="stylesheet">
+  <link href="/assets/css/content.css?v=languages-20261015" rel="stylesheet">
 </head>
 
 <body class="index-page">
@@ -55,7 +56,7 @@
 
     <div class="spacer"></div>
 
-    <div class="lang"><a href="/gallery/" aria-label="English">EN</a><a href="/pl/gallery/" aria-label="Polski" class="on">PL</a><a href="/nl/gallery/" aria-label="Nederlands">NL</a></div>
+    <div class="lang"><a href="/gallery/" lang="en" aria-label="English">EN</a><a href="/nl/gallery/" lang="nl" aria-label="Nederlands">NL</a><a href="/de/gallery/" lang="de" aria-label="Deutsch">DE</a><a href="/pl/gallery/" lang="pl" aria-label="Polski" class="on" aria-current="page">PL</a></div>
 
     <a class="btn btn-copper btn-sm" href="/pl/#contact">Rozpocznij projekt</a>
 
@@ -103,7 +104,7 @@
     </div>
 
     <div class="ft-bottom">
-      <span>© 2026 ARCADIAN Sp. z o.o. — ul. Ostrobramska 101/4, Warszawa</span>
+      <span>© 2026 ARCADIAN Sp.z.o.o. — ul. Ostrobramska 101/4, Warszawa</span>
       <span class="sep"></span>
       <span class="wv-note">
         <span class="wv-tile"><img src="/assets/img/werfvolt-icon.svg?v=stars-v2-20260913" width="38" height="38" alt=""></span>
@@ -186,7 +187,7 @@
 </footer>
   <script src="/assets/js/arcadian.js"></script>
   <script src="/assets/js/content-config.js"></script>
-  <script src="/assets/js/content.js?v=translation-preview-20261007"></script>
+  <script src="/assets/js/content.js?v=languages-20261015"></script>
   <script src="/assets/js/cookie-preferences.js"></script>
 </body>
 </html>
