@@ -25,12 +25,19 @@ language menus in EN → NL → DE → PL order, and the sitemap.
 
 1. Commit and push changes to corporate `origin`; the GHE workflow validates
    JavaScript, the static build, HTML, links and the CMS.
-2. After source checks pass, promote the **same commit** to
-   `publication-mirror/main`. Never develop independent changes in that mirror.
+2. After checks on corporate `main` pass, the `mirror` job automatically promotes
+   the **same commit** to `publication-mirror/main` using a GitHub App token.
+   Pull requests and feature branches cannot publish. Never develop independent
+   changes in the mirror.
 3. The GitHub.com workflow checks the promoted commit, applies `.do/app.yaml`,
    deploys the existing DigitalOcean app and runs live smoke checks.
-4. Confirm the DigitalOcean deployment, served release marker and changed asset
-   hashes before reporting publication complete.
+4. The corporate job waits for `/deployment.json` to serve that exact commit.
+   The publication workflow verifies the same marker and runs live smoke checks.
+
+Main runs are serialized on both hosts. Superseded corporate commits are skipped
+before promotion; a running publication is allowed to finish. Promotion uses a
+normal fast-forward push and refuses divergent mirror history. Other branches
+and tags are not synchronized by the publisher.
 
 Local remotes:
 
@@ -49,10 +56,26 @@ The publication repository requires:
 - `TURNSTILE_SITEKEY` variable containing the registered public sitekey;
 - `CMS_PUBLIC_URL=https://cms.arcadian-eu.com` variable.
 
-These production credentials are not needed for checks in GHE. A GHE run skips
-deployment and smoke jobs; it must not deploy a different commit from the mirror.
-If hosted automation is unavailable, promote the tested commit, select **Deploy**
-in the existing DigitalOcean app and perform the same live verification.
+Corporate GHE requires the `PUBLICATION_APP_CLIENT_ID` variable and the
+`PUBLICATION_APP_PRIVATE_KEY` Actions secret. The company-owned GitHub App is
+installed on the publication repository only, with Contents and Workflows write
+permissions and mandatory Metadata read permission. It has no organization or
+account permissions. The official, pinned `actions/create-github-app-token`
+action issues a token for that repository and revokes it when the job ends;
+the token also expires after one hour. The App key is never committed or sent to
+DigitalOcean, and the publisher does not use a personal-account token.
+
+Checks do not require production credentials. GHE runs the `mirror` job after its
+checks and skips the DigitalOcean jobs; GitHub.com skips `mirror` and runs deploy
+and smoke. `SOURCE_COMMIT` in the App Platform build configuration is set by the
+publication workflow from its exact commit hash. The static build writes this to
+`/deployment.json`; a reachable page alone is not proof of the expected release.
+
+If the publication workflow fails after the mirror was updated, rerun that failed
+GitHub.com workflow. No manual code transfer is needed. If the mirror diverges,
+inspect the independent commits and reconcile them explicitly; do not force-push.
+Missing credentials, build failures or a 15-minute served-marker timeout fail the
+corporate publication job.
 
 ## Contact form and local checks
 
