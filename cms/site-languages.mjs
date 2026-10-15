@@ -27,8 +27,8 @@ export async function refreshSiteLanguages(root) {
       html = html.replace(/\/assets\/js\/(content|pdf-preview|contact-form)\.js(?:\?v=[^"'\s>]*)?/g, '/assets/js/$1.js?v=languages-20261015');
       html = html.replace(/\/assets\/css\/(arcadian|content)\.css(?:\?v=[^"'\s>]*)?/g, '/assets/css/$1.css?v=languages-20261015');
       if (/data-content-page="(?:gallery|documents|cooperation)"/.test(html)) {
-        html = html.replace(/\/assets\/js\/(content|pdf-preview)\.js\?v=[^"'\s>]*/g, '/assets/js/$1.js?v=projects-rates-20261015');
-        html = html.replace(/\/assets\/css\/content\.css\?v=[^"'\s>]*/g, '/assets/css/content.css?v=projects-rates-20261015');
+        html = html.replace(/\/assets\/js\/(content|pdf-preview)\.js\?v=[^"'\s>]*/g, '/assets/js/$1.js?v=projects-rates-20261015b');
+        html = html.replace(/\/assets\/css\/content\.css\?v=[^"'\s>]*/g, '/assets/css/content.css?v=projects-rates-20261015b');
       }
       html = html.replace(/\s*<link rel="alternate" hreflang="[^"]+" href="[^"]+">/g, '');
       const alternates = siteLanguages.map(item => `\n  <link rel="alternate" hreflang="${item.code}" href="https://arcadian-eu.com/${item.prefix}${route}">`).join('') + `\n  <link rel="alternate" hreflang="x-default" href="https://arcadian-eu.com/${route}">`;

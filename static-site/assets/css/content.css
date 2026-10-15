@@ -113,6 +113,7 @@
 .worker-earning{min-width:0;padding:20px;background:#f8f9fb;border:1px solid var(--line);border-radius:8px}
 .worker-earning h3{font:600 14px var(--body);line-height:1.5;margin:0 0 12px;overflow-wrap:anywhere}
 .worker-earning-amount{font:600 clamp(24px,2.2vw,30px) var(--display);letter-spacing:-.025em;color:var(--copper-deep);font-variant-numeric:tabular-nums;margin:0;overflow-wrap:anywhere}
+.worker-earning-reference{display:block;margin-top:8px;font:400 12px var(--body);line-height:1.6;letter-spacing:0;color:var(--muted)}
 .worker-earnings-note{font-size:12px;line-height:1.75;color:var(--muted);margin:0}
 @media(max-width:720px){.worker-earnings{padding:24px}.worker-earnings h2{font-size:23px}.worker-earnings-grid{grid-template-columns:minmax(0,1fr);gap:12px}.worker-earning{padding:18px 20px}.worker-earning h3{margin-bottom:7px}}
 .content-grid.document-grid{grid-template-columns:minmax(0,1fr)}

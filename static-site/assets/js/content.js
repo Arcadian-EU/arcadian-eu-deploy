@@ -24,8 +24,13 @@
   const more = root.querySelector('[data-content-more]');
   const type = root.dataset.contentPage;
   if (type === 'cooperation') return;
-  const caseStudies = type === 'gallery' ? (await import(new URL('project-cases.js', scriptURL))).caseStudies : {};
-  const workerRateSheet = type === 'documents' ? (await import(new URL('worker-rate-sheet.js', scriptURL))).workerRateSheet : null;
+  const moduleURL = filename => {
+    const url = new URL(filename, scriptURL);
+    url.search = new URL(scriptURL).search;
+    return url;
+  };
+  const caseStudies = type === 'gallery' ? (await import(moduleURL('project-cases.js'))).caseStudies : {};
+  const workerRateSheet = type === 'documents' ? (await import(moduleURL('worker-rate-sheet.js'))).workerRateSheet : null;
   const isDocument = type === 'documents';
   const isRate = type === 'rates' || isDocument;
   let cms;
@@ -329,6 +334,11 @@
   function documentCard(row) {
     if (!fileId(row.id)) throw new Error('Invalid document identifier.');
     const workerSheet = row.id === workerRateSheet?.id ? workerRateSheet : null;
+    const workerFile = language => {
+      const url = new URL(workerSheet.files[language], location.origin);
+      url.searchParams.set('v', workerSheet.version);
+      return url;
+    };
     if (workerSheet) row = {...row, ...workerSheet.document};
     const card = element('article', 'document-card');
     card.lang = locale === 'de' ? 'de' : 'en';
@@ -361,7 +371,7 @@
     fileInfo.append(element('strong', '', locale === 'de' ? 'Englisches Preisblatt' : 'English rate sheet'), element('span', 'document-meta', meta));
     file.append(icon, fileInfo); main.append(file);
     const actions = element('div', 'document-actions');
-    const documentURL = workerSheet ? new URL(workerSheet.files.en, location.origin).href : new URL(`api/documents/${row.id}/`, cms.href.replace(/\/?$/, '/')).href;
+    const documentURL = workerSheet ? workerFile('en').href : new URL(`api/documents/${row.id}/`, cms.href.replace(/\/?$/, '/')).href;
     const view = element('button', 'btn btn-copper', locale === 'de' ? 'Englisches PDF ansehen' : 'View English PDF');
     view.type = 'button';
     view.setAttribute('aria-haspopup', 'dialog');
@@ -369,7 +379,9 @@
     view.addEventListener('click', openPreview);
     titleButton.addEventListener('click', openPreview);
     const download = element('a', 'btn btn-outline', locale === 'de' ? 'Herunterladen' : 'Download');
-    download.href = `${documentURL}?download=1`;
+    const downloadURL = new URL(documentURL);
+    downloadURL.searchParams.set('download', '1');
+    download.href = downloadURL.href;
     if (workerSheet) download.download = workerSheet.files.en.split('/').pop();
     actions.append(view, download); main.append(actions); card.append(main);
     const languages = {nl: 'Nederlands', de: 'Deutsch', pl: 'Polski', ru: 'Русский'};
@@ -382,7 +394,7 @@
       const files = element('div', 'translation-files');
       for (const item of translations) {
         const attachment = element('div', 'translation-file');
-        const translationURL = new URL(workerSheet ? workerSheet.files[item.language] : documentURL, location.origin);
+        const translationURL = workerSheet ? workerFile(item.language) : new URL(documentURL);
         if (!workerSheet) translationURL.searchParams.set('language', item.language);
         const previewURL = translationURL.href;
         const preview = element('button', 'translation-preview');

@@ -13,23 +13,24 @@ export const workerRateSheet = {
     "effective_date": "2026-10-15",
     "primary_language": "en",
     "page_count": 3,
-    "file_bytes": 130726,
+    "file_bytes": 131322,
     "translations": [
       {
         "language": "ru",
         "page_count": 3,
-        "file_bytes": 137499
+        "file_bytes": 138071
       },
       {
         "language": "pl",
         "page_count": 3,
-        "file_bytes": 132007
+        "file_bytes": 132596
       },
       {
         "language": "nl",
         "page_count": 3,
-        "file_bytes": 130601
+        "file_bytes": 131197
       }
     ]
-  }
+  },
+  "version": "51417b8e4151c8aa"
 };
