@@ -5,7 +5,7 @@
 #
 # The contact form posts straight to https://werfvolt.be/api/public/leads/form.
 # This app has no server function or secret; its public Turnstile sitekey is
-# injected into the four localized forms during the static build.
+# injected into the four localized homepages and Dutch facade form during the build.
 name: arcadian-eu
 region: fra
 alerts:

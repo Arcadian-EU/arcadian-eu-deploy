@@ -33,6 +33,14 @@ jobs:
           node-version: "22"
       - name: Check contact-form JavaScript
         run: node --check static-site/assets/js/contact-form.js
+      - name: Check facade calculator and language routes
+        run: |
+          node --check static-site/assets/js/facade-calculator.js
+          node --check static-site/assets/js/facade-pricing.js
+          node --check static-site/assets/js/facade-vat.js
+          node cms/test-facade-vat.mjs
+          node cms/test-facade-pricing.mjs
+          node cms/test-site-languages.mjs
       - name: Test publication ordering and deployment proof
         run: python3 -m unittest discover -s .github/scripts -p 'test_*.py' -v
       - run: npm ci --ignore-scripts
@@ -198,6 +206,7 @@ jobs:
       - name: Live pages respond
         run: |
           for url in https://arcadian-eu.com/ https://arcadian-eu.com/nl/ https://arcadian-eu.com/de/ https://arcadian-eu.com/pl/ \
+                     https://arcadian-eu.com/nl/gevelwerken/ \
                      https://arcadian-eu.com/investors/ https://arcadian-eu.com/nl/investors/ \
                      https://arcadian-eu.com/de/investors/ https://arcadian-eu.com/pl/investors/ \
                      https://arcadian-eu.com/privacy/ https://www.arcadian-eu.com/; do
