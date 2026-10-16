@@ -141,17 +141,19 @@ label.lbl{display:block;font-size:12.5px;font-weight:600;color:#4a4436;margin:0 
    ============================================================ */
 .nav{position:sticky;top:0;z-index:50;background:rgba(11,16,32,.86);backdrop-filter:blur(12px);
   border-bottom:1px solid rgba(255,255,255,.07)}
-.nav-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:24px;height:66px;padding:0 24px}
-.nav-links{display:flex;gap:24px;margin-left:8px}
-.nav-links a{font-size:13.5px;font-weight:500;color:#aeb4c4;transition:color .13s}
+.nav-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:18px;height:66px;padding:0 24px}
+.nav-links{display:flex;gap:16px;margin-left:8px}
+.nav-links a{white-space:nowrap;font-size:13.5px;font-weight:500;color:#aeb4c4;transition:color .13s}
 .nav-links a:hover,.nav-links a.active{color:#fff}
+.nav-links a.nav-calculator{color:var(--copper-bright)}
 .nav .spacer{flex:1}
-.lang{display:flex;border:1px solid rgba(255,255,255,.14);border-radius:9px;overflow:hidden}
+.nav-in>.btn-sm{flex-shrink:0;white-space:nowrap}
+.lang{display:flex;flex-shrink:0;border:1px solid rgba(255,255,255,.14);border-radius:9px;overflow:hidden}
 .lang a{padding:5px 10px;font-size:12px;font-weight:600;color:#aeb4c4}
 .lang a.on{background:rgba(255,255,255,.1);color:#fff}
 .nav-burger{display:none;background:none;border:0;cursor:pointer;padding:8px}
 .nav-burger span{display:block;width:20px;height:2px;background:#eef1f8;margin:4px 0;border-radius:2px}
-@media (max-width:1100px){
+@media (max-width:1200px){
   .nav-links{display:none;position:absolute;top:66px;left:0;right:0;background:var(--ink-2);
     flex-direction:column;gap:0;padding:10px 24px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
   .nav-links a{padding:11px 0;font-size:15px}
@@ -169,6 +171,7 @@ label.lbl{display:block;font-size:12.5px;font-weight:600;color:#4a4436;margin:0 
 .hero h1 .copper{background:linear-gradient(120deg,#f0a45f,var(--copper-bright));-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero p.lead{font-size:17px;color:#a9b0c2;max-width:520px}
 .hero-actions{display:flex;gap:12px;margin:30px 0 0;flex-wrap:wrap}
+.hero-actions .btn{max-width:100%;min-height:44px;height:auto;padding-top:12px;padding-bottom:12px;text-align:center}
 .hero-stats{display:flex;margin-top:46px;border-top:1px solid rgba(255,255,255,.09);flex-wrap:wrap}
 .hero-stats .st{padding:18px 24px 0 0;margin-right:24px;white-space:nowrap}
 .hero-stats .st+.st{border-left:1px solid rgba(255,255,255,.09);padding-left:24px}
