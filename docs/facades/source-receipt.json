@@ -1,0 +1,50 @@
+{
+  "observed_at": "2026-10-15T16:00:51.900444+00:00",
+  "source": "https://www.gevelcalculator.cleys.be/",
+  "script": "https://gevelcalculatorcdn.cleys.be/static/base/js/calc.js",
+  "sha256": {
+    "calculator.html": "1f5835baf9e9a624dea3f59c2f46116e22e79b8635bf594dd5ea4199c19cb8ea",
+    "calc.js": "69e30a86bf01a8bae2ab5457c03c99a389292a0c9cfb2d42e55e563bae044ee1"
+  },
+  "minimum_displayed_total": 10000,
+  "premium_in_reference": {
+    "per_net_m2": 22,
+    "cap": 2250,
+    "eligibility": "renovation, eligible finish, insulation >=10cm; not current legal eligibility"
+  },
+  "vat_observation": "Building labels 6/21 percent. No VAT multiplication in public getPrice function. Inclusion not proven.",
+  "scope_observation": "No exhaustive materials/scaffolding/inclusions list on calculator; quote required.",
+  "ui_control": {
+    "building": "renovation",
+    "finish": "plaster",
+    "isolate": true,
+    "thickness": 14,
+    "gross": 201,
+    "net": 201,
+    "height": 11,
+    "plinth": "stone",
+    "plinth_m": 21,
+    "aluminium_m": 1,
+    "stone_m": 1,
+    "facade": 31356,
+    "extras": 2690,
+    "premium": 2250,
+    "displayed": 31796,
+    "before_premium": 34046,
+    "arcadian_before_premium": 34046
+  },
+  "price_factor": 1,
+  "pricing_policy": "Same reference rates before premiums, no discount; emphasize execution planning. Owner instruction 2026-10-15.",
+  "superseded_policy": {
+    "price_factor": 0.75,
+    "status": "superseded by owner on 2026-10-15"
+  },
+  "consumer_vat_policy": {
+    "owner_confirmed": "2026-10-16",
+    "reference_vat_inclusion": "not proven",
+    "arcadian_basis": "retain numerical reference base, treat as Arcadian calculation base excluding Belgian VAT",
+    "renovation_display": "inclusive range at 6% and 21%; reduced-rate eligibility is conditional",
+    "new_build_display": "21% scenario; final applicable VAT confirmed in quote",
+    "private_reverse_charge": "not applicable; no 0% claim"
+  }
+}

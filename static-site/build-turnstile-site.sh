@@ -39,7 +39,7 @@ if ! printf '%s' "$CMS_URL" | grep -Eq '^https://[A-Za-z0-9.-]+(:[0-9]{2,5})?$';
   exit 1
 fi
 
-for relative_page in index.html nl/index.html de/index.html pl/index.html; do
+for relative_page in index.html nl/index.html de/index.html pl/index.html nl/gevelwerken/index.html; do
   source_page="$SITE_DIR/$relative_page"
   placeholder_count=$({ grep -F -o "$PLACEHOLDER" "$source_page" || true; } | wc -l | tr -d '[:space:]')
   action_count=$({ grep -F -o 'data-action="arcadian_contact"' "$source_page" || true; } | wc -l | tr -d '[:space:]')
@@ -69,7 +69,7 @@ for entry in "$SITE_DIR"/*; do
   cp -R "$entry" "$TEMP_DIR/"
 done
 
-for relative_page in index.html nl/index.html de/index.html pl/index.html; do
+for relative_page in index.html nl/index.html de/index.html pl/index.html nl/gevelwerken/index.html; do
   output_page="$TEMP_DIR/$relative_page"
   sed "s|$PLACEHOLDER|$SITEKEY|g" "$output_page" > "$output_page.tmp"
   mv "$output_page.tmp" "$output_page"
@@ -86,4 +86,4 @@ fi
 rm -rf "$OUTPUT_DIR"
 mv "$TEMP_DIR" "$OUTPUT_DIR"
 TEMP_DIR=""
-echo "Static site built in $OUTPUT_DIR with four configured Turnstile widgets."
+echo "Static site built in $OUTPUT_DIR with five configured Turnstile widgets."
